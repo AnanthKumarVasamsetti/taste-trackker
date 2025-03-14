@@ -44,17 +44,11 @@ AuditSchema.set('toJSON', {
     ret.id = ret._id.toString();
     delete ret._id;
     delete ret.__v;
+    // Convert dates to ISO strings
+    if (ret.createdAt) ret.createdAt = new Date(ret.createdAt).toISOString();
+    if (ret.updatedAt) ret.updatedAt = new Date(ret.updatedAt).toISOString();
     return ret;
   }
-});
-
-// Convert createdAt and updatedAt to strings
-AuditSchema.virtual('createdAt').get(function() {
-  return this._doc.createdAt.toISOString();
-});
-
-AuditSchema.virtual('updatedAt').get(function() {
-  return this._doc.updatedAt.toISOString();
 });
 
 // Create and export the model

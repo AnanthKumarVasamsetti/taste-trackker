@@ -8,8 +8,8 @@ import { AuditType, AuditorType } from '@/types';
 export const fetchAudits = async (): Promise<AuditType[]> => {
   try {
     await connectToDatabase();
-    const audits = await Audit.find().lean();
-    return audits as unknown as AuditType[];
+    const audits = await Audit.find().exec();
+    return audits.map(audit => audit.toJSON()) as AuditType[];
   } catch (error) {
     console.error('Error fetching audits:', error);
     throw error;
@@ -19,11 +19,11 @@ export const fetchAudits = async (): Promise<AuditType[]> => {
 export const fetchAuditById = async (id: string): Promise<AuditType> => {
   try {
     await connectToDatabase();
-    const audit = await Audit.findById(id).lean();
+    const audit = await Audit.findById(id).exec();
     if (!audit) {
       throw new Error(`Audit with ID ${id} not found`);
     }
-    return audit as unknown as AuditType;
+    return audit.toJSON() as AuditType;
   } catch (error) {
     console.error(`Error fetching audit ${id}:`, error);
     throw error;
@@ -41,10 +41,10 @@ export const createAudit = async (auditData: Omit<AuditType, 'id' | 'createdAt' 
       await Auditor.findByIdAndUpdate(
         auditData.auditorId,
         { $push: { assignedAudits: newAudit._id } }
-      );
+      ).exec();
     }
     
-    return newAudit.toJSON() as unknown as AuditType;
+    return newAudit.toJSON() as AuditType;
   } catch (error) {
     console.error('Error creating audit:', error);
     throw error;
@@ -56,14 +56,14 @@ export const updateAudit = async (id: string, auditData: Partial<AuditType>): Pr
     await connectToDatabase();
     
     // If auditorId is being updated, handle reassignment
-    const currentAudit = await Audit.findById(id);
+    const currentAudit = await Audit.findById(id).exec();
     if (currentAudit && auditData.auditorId !== undefined && auditData.auditorId !== currentAudit.auditorId?.toString()) {
       // Remove from previous auditor if exists
       if (currentAudit.auditorId) {
         await Auditor.findByIdAndUpdate(
           currentAudit.auditorId,
           { $pull: { assignedAudits: id } }
-        );
+        ).exec();
       }
       
       // Add to new auditor if provided
@@ -71,7 +71,7 @@ export const updateAudit = async (id: string, auditData: Partial<AuditType>): Pr
         await Auditor.findByIdAndUpdate(
           auditData.auditorId,
           { $push: { assignedAudits: id } }
-        );
+        ).exec();
       }
     }
     
@@ -79,13 +79,13 @@ export const updateAudit = async (id: string, auditData: Partial<AuditType>): Pr
       id,
       auditData,
       { new: true, runValidators: true }
-    ).lean();
+    ).exec();
     
     if (!updatedAudit) {
       throw new Error(`Audit with ID ${id} not found`);
     }
     
-    return updatedAudit as unknown as AuditType;
+    return updatedAudit.toJSON() as AuditType;
   } catch (error) {
     console.error(`Error updating audit ${id}:`, error);
     throw error;
@@ -97,7 +97,7 @@ export const deleteAudit = async (id: string): Promise<void> => {
     await connectToDatabase();
     
     // Get audit to handle auditor reference
-    const audit = await Audit.findById(id);
+    const audit = await Audit.findById(id).exec();
     if (!audit) {
       throw new Error(`Audit with ID ${id} not found`);
     }
@@ -107,10 +107,10 @@ export const deleteAudit = async (id: string): Promise<void> => {
       await Auditor.findByIdAndUpdate(
         audit.auditorId,
         { $pull: { assignedAudits: id } }
-      );
+      ).exec();
     }
     
-    await Audit.findByIdAndDelete(id);
+    await Audit.findByIdAndDelete(id).exec();
   } catch (error) {
     console.error(`Error deleting audit ${id}:`, error);
     throw error;
@@ -121,8 +121,8 @@ export const deleteAudit = async (id: string): Promise<void> => {
 export const fetchAuditors = async (): Promise<AuditorType[]> => {
   try {
     await connectToDatabase();
-    const auditors = await Auditor.find().lean();
-    return auditors as unknown as AuditorType[];
+    const auditors = await Auditor.find().exec();
+    return auditors.map(auditor => auditor.toJSON()) as AuditorType[];
   } catch (error) {
     console.error('Error fetching auditors:', error);
     throw error;
@@ -132,11 +132,11 @@ export const fetchAuditors = async (): Promise<AuditorType[]> => {
 export const fetchAuditorById = async (id: string): Promise<AuditorType> => {
   try {
     await connectToDatabase();
-    const auditor = await Auditor.findById(id).lean();
+    const auditor = await Auditor.findById(id).exec();
     if (!auditor) {
       throw new Error(`Auditor with ID ${id} not found`);
     }
-    return auditor as unknown as AuditorType;
+    return auditor.toJSON() as AuditorType;
   } catch (error) {
     console.error(`Error fetching auditor ${id}:`, error);
     throw error;
@@ -148,7 +148,7 @@ export const createAuditor = async (auditorData: Omit<AuditorType, 'id'>): Promi
     await connectToDatabase();
     const newAuditor = new Auditor(auditorData);
     await newAuditor.save();
-    return newAuditor.toJSON() as unknown as AuditorType;
+    return newAuditor.toJSON() as AuditorType;
   } catch (error) {
     console.error('Error creating auditor:', error);
     throw error;
@@ -162,13 +162,13 @@ export const updateAuditor = async (id: string, auditorData: Partial<AuditorType
       id,
       auditorData,
       { new: true, runValidators: true }
-    ).lean();
+    ).exec();
     
     if (!updatedAuditor) {
       throw new Error(`Auditor with ID ${id} not found`);
     }
     
-    return updatedAuditor as unknown as AuditorType;
+    return updatedAuditor.toJSON() as AuditorType;
   } catch (error) {
     console.error(`Error updating auditor ${id}:`, error);
     throw error;
@@ -180,7 +180,7 @@ export const deleteAuditor = async (id: string): Promise<void> => {
     await connectToDatabase();
     
     // Find the auditor to check for assigned audits
-    const auditor = await Auditor.findById(id);
+    const auditor = await Auditor.findById(id).exec();
     if (!auditor) {
       throw new Error(`Auditor with ID ${id} not found`);
     }
@@ -190,10 +190,10 @@ export const deleteAuditor = async (id: string): Promise<void> => {
       await Audit.updateMany(
         { _id: { $in: auditor.assignedAudits } },
         { $unset: { auditorId: "" } }
-      );
+      ).exec();
     }
     
-    await Auditor.findByIdAndDelete(id);
+    await Auditor.findByIdAndDelete(id).exec();
   } catch (error) {
     console.error(`Error deleting auditor ${id}:`, error);
     throw error;
