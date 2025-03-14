@@ -10,6 +10,7 @@ import AuditsList from "./pages/audits/AuditsList";
 import AuditDetail from "./pages/audits/AuditDetail";
 import CreateAudit from "./pages/audits/CreateAudit";
 import AuditorsList from "./pages/auditors/AuditorsList";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Index />} />
           <Route path="/audits" element={<AuditsList />} />
           <Route path="/audits/:id" element={<AuditDetail />} />
