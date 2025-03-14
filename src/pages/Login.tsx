@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { loginUser } from "@/services/api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,14 +22,14 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate login process
-    setTimeout(() => {
-      // In a real app, this would be an actual authentication check
-      if (email && password) {
+    try {
+      const isSuccess = await loginUser(email, password);
+      
+      if (isSuccess) {
         toast({
           title: "Login successful",
           description: "Welcome to FoodAudit Pro",
@@ -41,8 +42,16 @@ const Login = () => {
           variant: "destructive",
         });
       }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast({
+        title: "Login error",
+        description: "An error occurred during login. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (

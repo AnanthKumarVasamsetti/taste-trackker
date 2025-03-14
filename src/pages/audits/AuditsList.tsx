@@ -16,26 +16,51 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { mockAudits, mockAuditors } from "@/data/mockData";
 import { Link } from "react-router-dom";
 import { ClipboardList, Search, Filter } from "lucide-react";
 import { useState } from "react";
 import { AuditType } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAudits, fetchAuditors } from "@/services/api";
+import { useToast } from "@/components/ui/use-toast";
 
 const AuditsList = () => {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   
-  const filteredAudits = mockAudits.filter(audit => {
+  // Fetch audits
+  const { data: audits, isLoading: auditsLoading, error: auditsError } = useQuery({
+    queryKey: ['audits'],
+    queryFn: fetchAudits
+  });
+
+  // Fetch auditors for display
+  const { data: auditors, isLoading: auditorsLoading } = useQuery({
+    queryKey: ['auditors'],
+    queryFn: fetchAuditors
+  });
+
+  // Show toast on error
+  if (auditsError) {
+    toast({
+      title: "Error loading audits",
+      description: "There was a problem loading the audits. Please try again.",
+      variant: "destructive",
+    });
+  }
+
+  // Filter audits based on search term and status
+  const filteredAudits = audits?.filter(audit => {
     const matchesSearch = audit.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           audit.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || audit.status === statusFilter;
     return matchesSearch && matchesStatus;
-  });
+  }) || [];
 
   const getAuditorName = (auditorId?: string) => {
     if (!auditorId) return "Unassigned";
-    const auditor = mockAuditors.find(auditor => auditor.id === auditorId);
+    const auditor = auditors?.find(auditor => auditor.id === auditorId);
     return auditor ? auditor.name : "Unknown";
   };
 
@@ -98,7 +123,13 @@ const AuditsList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAudits.length > 0 ? (
+                  {auditsLoading ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-gray-500">
+                        Loading audits...
+                      </td>
+                    </tr>
+                  ) : filteredAudits.length > 0 ? (
                     filteredAudits.map((audit) => (
                       <AuditRow 
                         key={audit.id} 
