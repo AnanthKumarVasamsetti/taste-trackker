@@ -266,7 +266,7 @@ const CreateAudit = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="">Unassigned</SelectItem>
+                          <SelectItem value="unassigned">Unassigned</SelectItem>
                           {mockAuditors.map(auditor => (
                             <SelectItem key={auditor.id} value={auditor.id}>
                               {auditor.name} - {auditor.role}
