@@ -12,6 +12,7 @@ import CreateAudit from "./pages/audits/CreateAudit";
 import AuditorsList from "./pages/auditors/AuditorsList";
 import ReportsList from "./pages/reports/ReportsList";
 import SettingsPage from "./pages/settings/SettingsPage";
+import AnalyticsPage from "./pages/analytics/AnalyticsPage";
 import Login from "./pages/Login";
 
 // Mobile PWA Routes
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/audits/edit/:id" element={<AuditDetail />} />
           <Route path="/auditors" element={<AuditorsList />} />
           <Route path="/reports" element={<ReportsList />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           
           {/* Mobile PWA Routes */}

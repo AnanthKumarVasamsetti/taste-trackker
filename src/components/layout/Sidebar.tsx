@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar";
-import { ClipboardCheck, Home, Users, BarChart, Settings } from "lucide-react";
+import { ClipboardCheck, Home, Users, BarChart, Settings, LineChart } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
@@ -33,6 +33,11 @@ const Sidebar = () => {
       title: "Reports",
       icon: BarChart,
       path: "/reports"
+    },
+    {
+      title: "Analytics",
+      icon: LineChart,
+      path: "/analytics"
     },
     {
       title: "Settings",
