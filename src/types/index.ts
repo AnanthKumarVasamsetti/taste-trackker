@@ -23,6 +23,7 @@ export type AuditItemType = {
   options?: string[];
   required: boolean;
   response?: string | number | boolean;
+  notes?: string;
 };
 
 export type AuditType = {
@@ -36,4 +37,23 @@ export type AuditType = {
   status: AuditStatus;
   auditorId?: string;
   sections: AuditSectionType[];
+  completedSections?: string[];
+  notes?: string;
+  submittedAt?: string;
+};
+
+export type AuditResponseType = {
+  auditId: string;
+  auditorId: string;
+  responses: {
+    sectionId: string;
+    items: {
+      itemId: string;
+      response: string | number | boolean;
+      notes?: string;
+    }[];
+  }[];
+  status: AuditStatus;
+  completedAt?: string;
+  notes?: string;
 };
