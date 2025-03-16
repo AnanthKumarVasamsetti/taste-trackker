@@ -10,6 +10,8 @@ import AuditsList from "./pages/audits/AuditsList";
 import AuditDetail from "./pages/audits/AuditDetail";
 import CreateAudit from "./pages/audits/CreateAudit";
 import AuditorsList from "./pages/auditors/AuditorsList";
+import ReportsList from "./pages/reports/ReportsList";
+import SettingsPage from "./pages/settings/SettingsPage";
 import Login from "./pages/Login";
 
 // Mobile PWA Routes
@@ -35,6 +37,8 @@ const App = () => (
           <Route path="/audits/new" element={<CreateAudit />} />
           <Route path="/audits/edit/:id" element={<AuditDetail />} />
           <Route path="/auditors" element={<AuditorsList />} />
+          <Route path="/reports" element={<ReportsList />} />
+          <Route path="/settings" element={<SettingsPage />} />
           
           {/* Mobile PWA Routes */}
           <Route path="/mobile" element={<MobileIndex />} />
