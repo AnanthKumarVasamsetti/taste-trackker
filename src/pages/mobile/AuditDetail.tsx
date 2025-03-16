@@ -1,232 +1,188 @@
 
-import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { ChevronLeft, CheckCircle2, Clock, MapPin, User, FileText } from "lucide-react";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { mockAudits } from "@/data/mockData";
-import { AuditItemType, AuditSectionType } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, MapPin, ArrowLeft, ClipboardCheck, Send } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { mockAudits, mockAuditors } from "@/data/mockData";
+import { toast } from "sonner";
+import { AuditItemType, AuditSectionType } from "@/types";
 
 const MobileAuditDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const audit = mockAudits.find(a => a.id === id);
-  
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
-  const [responses, setResponses] = useState<Record<string, Record<string, any>>>({});
-  const [notes, setNotes] = useState("");
+  const [responses, setResponses] = useState<Record<string, string | boolean>>({});
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  
+  const audit = mockAudits.find(a => a.id === id);
   
   if (!audit) {
     return (
       <MobileLayout>
         <div className="flex flex-col items-center justify-center h-[60vh]">
           <h2 className="text-xl font-bold">Audit Not Found</h2>
-          <p className="text-gray-500 mb-4">The audit you're looking for doesn't exist or has been removed.</p>
-          <Button variant="outline" onClick={() => navigate("/mobile/audits")}>
-            Back to Audits
-          </Button>
+          <p className="text-gray-500 mb-4">The audit you're looking for doesn't exist.</p>
+          <Link to="/mobile/audits">
+            <Button variant="outline">Back to Audits</Button>
+          </Link>
         </div>
       </MobileLayout>
     );
   }
+
+  const auditor = audit.auditorId ? mockAuditors.find(a => a.id === audit.auditorId) : null;
   
-  const handleResponseChange = (sectionId: string, itemId: string, value: any) => {
+  const handleItemResponse = (itemId: string, value: string | boolean) => {
     setResponses(prev => ({
       ...prev,
-      [sectionId]: {
-        ...(prev[sectionId] || {}),
-        [itemId]: value
-      }
+      [itemId]: value
     }));
   };
   
-  const isCurrentSectionComplete = () => {
-    if (!audit.sections[activeSection]) return true;
-    
-    const currentSection = audit.sections[activeSection];
-    const currentResponses = responses[currentSection.id] || {};
-    
-    return currentSection.items.every(item => 
-      !item.required || currentResponses[item.id] !== undefined
-    );
+  const handleItemNotes = (itemId: string, value: string) => {
+    setNotes(prev => ({
+      ...prev,
+      [itemId]: value
+    }));
   };
   
-  const handleNext = () => {
+  const nextSection = () => {
     if (activeSection < audit.sections.length - 1) {
       setActiveSection(prev => prev + 1);
       window.scrollTo(0, 0);
     }
   };
   
-  const handlePrevious = () => {
+  const prevSection = () => {
     if (activeSection > 0) {
       setActiveSection(prev => prev - 1);
       window.scrollTo(0, 0);
     }
   };
   
-  const handleSubmit = () => {
-    // In a real app, this would send the data to the server
-    toast.success("Audit submitted successfully");
-    navigate("/mobile/audits");
+  const handleSubmitAudit = () => {
+    setIsSubmitting(true);
+    
+    // Simulating API call
+    setTimeout(() => {
+      toast.success("Audit submitted successfully!");
+      setIsSubmitting(false);
+    }, 1500);
   };
   
-  const getStatusColor = (status: string) => {
+  const getStatusBadge = (status: string) => {
+    const baseClasses = "text-xs rounded-full px-2 py-1";
     switch (status) {
       case 'pending':
-        return 'bg-amber-100 text-amber-800';
+        return `${baseClasses} bg-amber-100 text-amber-800`;
       case 'in-progress':
-        return 'bg-violet-100 text-violet-800';
+        return `${baseClasses} bg-violet-100 text-violet-800`;
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return `${baseClasses} bg-green-100 text-green-800`;
       default:
-        return 'bg-gray-100 text-gray-800';
+        return `${baseClasses} bg-gray-100 text-gray-800`;
     }
   };
   
-  const currentSection = audit.sections[activeSection];
-  const isLastSection = activeSection === audit.sections.length - 1;
-  const allSectionsComplete = audit.sections.every((section, index) => {
-    if (index > activeSection) return false;
-    
-    const sectionResponses = responses[section.id] || {};
-    return section.items.every(item => 
-      !item.required || sectionResponses[item.id] !== undefined
-    );
-  });
+  const activeProgressPercentage = ((activeSection + 1) / audit.sections.length) * 100;
   
   return (
-    <MobileLayout title="Audit Details">
-      <div className="space-y-4">
-        <Button 
-          variant="ghost" 
-          className="px-0" 
-          onClick={() => navigate("/mobile/audits")}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Audits
-        </Button>
-        
-        <div>
-          <h1 className="text-xl font-bold">{audit.title}</h1>
-          <Badge className={`mt-1 ${getStatusColor(audit.status)}`}>
+    <MobileLayout>
+      <div className="p-4 pb-24">
+        <div className="flex justify-between items-center mb-4">
+          <Link to="/mobile/audits" className="flex items-center text-gray-600">
+            <ChevronLeft className="h-5 w-5 mr-1" /> Back
+          </Link>
+          <span className={getStatusBadge(audit.status)}>
             {audit.status.replace('-', ' ')}
-          </Badge>
-          <p className="text-sm text-gray-500 mt-2">{audit.description}</p>
+          </span>
         </div>
         
-        <div className="grid grid-cols-2 gap-2 text-sm text-gray-500">
+        <h1 className="text-xl font-bold mb-2">{audit.title}</h1>
+        <p className="text-gray-600 text-sm mb-4">{audit.description}</p>
+        
+        <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="flex items-center">
-            <MapPin className="h-4 w-4 mr-1" />
-            {audit.location}
+            <Clock className="h-4 w-4 text-gray-500 mr-2" />
+            <div>
+              <p className="text-xs text-gray-500">Due Date</p>
+              <p className="text-sm">{new Date(audit.dueDate).toLocaleDateString()}</p>
+            </div>
           </div>
           <div className="flex items-center">
-            <Calendar className="h-4 w-4 mr-1" />
-            Due: {new Date(audit.dueDate).toLocaleDateString()}
+            <MapPin className="h-4 w-4 text-gray-500 mr-2" />
+            <div>
+              <p className="text-xs text-gray-500">Location</p>
+              <p className="text-sm">{audit.location}</p>
+            </div>
+          </div>
+          <div className="flex items-center">
+            <User className="h-4 w-4 text-gray-500 mr-2" />
+            <div>
+              <p className="text-xs text-gray-500">Auditor</p>
+              <p className="text-sm">{auditor?.name || "Unassigned"}</p>
+            </div>
+          </div>
+          <div className="flex items-center">
+            <FileText className="h-4 w-4 text-gray-500 mr-2" />
+            <div>
+              <p className="text-xs text-gray-500">Sections</p>
+              <p className="text-sm">{audit.sections.length}</p>
+            </div>
           </div>
         </div>
         
-        <Separator />
-        
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="font-semibold">Progress</h2>
-            <span className="text-sm text-gray-500">
-              Section {activeSection + 1} of {audit.sections.length}
-            </span>
-          </div>
-          
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
+        <div className="mb-6">
+          <div className="bg-gray-100 h-2 rounded-full mb-2">
             <div 
-              className="bg-brand-blue h-2.5 rounded-full" 
-              style={{ width: `${((activeSection) / audit.sections.length) * 100}%` }}
+              className="bg-brand-blue h-full rounded-full transition-all duration-300"
+              style={{ width: `${activeProgressPercentage}%` }}
             ></div>
           </div>
-          
-          <div className="flex flex-wrap gap-2 mt-4">
-            {audit.sections.map((section, index) => (
-              <div
-                key={section.id}
-                className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-medium cursor-pointer
-                  ${index === activeSection 
-                    ? 'bg-brand-blue text-white' 
-                    : index < activeSection 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-gray-100 text-gray-800'}`}
-                onClick={() => setActiveSection(index)}
-              >
-                {index + 1}
-              </div>
-            ))}
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>Section {activeSection + 1} of {audit.sections.length}</span>
+            <span>{Math.round(activeProgressPercentage)}% complete</span>
           </div>
         </div>
         
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-lg">
-              <ClipboardCheck className="h-5 w-5 mr-2 text-brand-blue" />
-              {currentSection.title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {currentSection.items.map((item) => (
-                <AuditItem 
-                  key={item.id} 
-                  item={item} 
-                  response={responses[currentSection.id]?.[item.id]}
-                  onChange={(value) => handleResponseChange(currentSection.id, item.id, value)}
-                />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <Separator className="my-4" />
         
-        {isLastSection && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Additional Notes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Textarea 
-                placeholder="Add any additional notes or observations here..."
-                className="min-h-[120px]"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-              />
-            </CardContent>
-          </Card>
-        )}
-        
-        <div className="flex justify-between pt-4 pb-8">
+        <AuditSection 
+          section={audit.sections[activeSection]} 
+          responses={responses}
+          notes={notes}
+          onResponseChange={handleItemResponse}
+          onNotesChange={handleItemNotes}
+        />
+      
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-between space-x-4">
           <Button 
             variant="outline" 
-            onClick={handlePrevious}
+            onClick={prevSection}
             disabled={activeSection === 0}
+            className="flex-1"
           >
             Previous
           </Button>
           
-          {!isLastSection ? (
+          {activeSection < audit.sections.length - 1 ? (
             <Button 
-              onClick={handleNext} 
-              disabled={!isCurrentSectionComplete()}
+              onClick={nextSection}
+              className="bg-brand-blue hover:bg-brand-blue-dark flex-1"
             >
               Next
             </Button>
           ) : (
             <Button 
-              onClick={handleSubmit}
-              disabled={!allSectionsComplete}
-              className="bg-green-600 hover:bg-green-700"
+              onClick={handleSubmitAudit}
+              disabled={isSubmitting}
+              className="bg-green-600 hover:bg-green-700 flex-1"
             >
-              <Send className="h-4 w-4 mr-2" />
-              Submit Audit
+              {isSubmitting ? "Submitting..." : "Submit Audit"}
             </Button>
           )}
         </div>
@@ -235,98 +191,129 @@ const MobileAuditDetail = () => {
   );
 };
 
-interface AuditItemProps {
-  item: AuditItemType;
-  response: any;
-  onChange: (value: any) => void;
+interface AuditSectionProps {
+  section: AuditSectionType;
+  responses: Record<string, string | boolean>;
+  notes: Record<string, string>;
+  onResponseChange: (itemId: string, value: string | boolean) => void;
+  onNotesChange: (itemId: string, value: string) => void;
 }
 
-const AuditItem = ({ item, response, onChange }: AuditItemProps) => {
-  const [notes, setNotes] = useState<string>("");
-  
+const AuditSection = ({ 
+  section, 
+  responses, 
+  notes,
+  onResponseChange,
+  onNotesChange
+}: AuditSectionProps) => {
   return (
-    <div className="border-b pb-4">
-      <div className="flex items-start mb-2">
-        <p className="font-medium">
-          {item.question} 
-          {item.required && <span className="text-red-500">*</span>}
-        </p>
-      </div>
+    <div className="space-y-6">
+      <h2 className="text-lg font-semibold">{section.title}</h2>
+      
+      {section.items.map((item) => (
+        <AuditItem 
+          key={item.id} 
+          item={item}
+          response={responses[item.id]}
+          notes={notes[item.id] || ""}
+          onResponseChange={(value) => onResponseChange(item.id, value)}
+          onNotesChange={(value) => onNotesChange(item.id, value)}
+        />
+      ))}
+    </div>
+  );
+};
+
+interface AuditItemProps {
+  item: AuditItemType;
+  response?: string | boolean;
+  notes: string;
+  onResponseChange: (value: string | boolean) => void;
+  onNotesChange: (value: string) => void;
+}
+
+const AuditItem = ({ 
+  item,
+  response,
+  notes,
+  onResponseChange,
+  onNotesChange
+}: AuditItemProps) => {
+  return (
+    <div className="border rounded-lg p-4">
+      <p className="font-medium mb-3">
+        {item.question}
+        {item.required && <span className="text-red-500">*</span>}
+      </p>
       
       {item.type === 'yes-no' && (
-        <div className="flex gap-4 mt-3">
-          <div 
-            className={`flex items-center gap-2 cursor-pointer ${response === true ? 'text-brand-green font-medium' : ''}`}
-            onClick={() => onChange(true)}
+        <div className="flex space-x-4 mb-4">
+          <Button
+            type="button"
+            variant={response === true ? "default" : "outline"}
+            size="sm"
+            onClick={() => onResponseChange(true)}
+            className={response === true ? "bg-green-600 hover:bg-green-700" : ""}
           >
-            <div className={`w-5 h-5 rounded-full border flex items-center justify-center
-              ${response === true ? 'bg-brand-green border-brand-green' : 'border-gray-300'}`}>
-              {response === true && <div className="w-2 h-2 bg-white rounded-full"></div>}
-            </div>
-            <span>Yes</span>
-          </div>
-          <div 
-            className={`flex items-center gap-2 cursor-pointer ${response === false ? 'text-red-500 font-medium' : ''}`}
-            onClick={() => onChange(false)}
+            Yes
+          </Button>
+          <Button
+            type="button"
+            variant={response === false ? "default" : "outline"}
+            size="sm"
+            onClick={() => onResponseChange(false)}
+            className={response === false ? "bg-red-600 hover:bg-red-700" : ""}
           >
-            <div className={`w-5 h-5 rounded-full border flex items-center justify-center
-              ${response === false ? 'bg-red-500 border-red-500' : 'border-gray-300'}`}>
-              {response === false && <div className="w-2 h-2 bg-white rounded-full"></div>}
-            </div>
-            <span>No</span>
-          </div>
+            No
+          </Button>
         </div>
       )}
       
-      {item.type === 'text' && (
-        <Textarea 
-          placeholder="Enter your response..."
-          className="mt-2"
-          value={response || ''}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      )}
-      
-      {item.type === 'numeric' && (
-        <Input 
-          type="number"
-          placeholder="Enter a number..."
-          className="mt-2"
-          value={response || ''}
-          onChange={(e) => onChange(parseFloat(e.target.value))}
-        />
-      )}
-      
       {item.type === 'multiple-choice' && item.options && (
-        <div className="space-y-2 mt-3">
-          {item.options.map((option, index) => (
-            <div 
-              key={index}
-              className={`flex items-center gap-2 p-2 border rounded cursor-pointer
-                ${response === option ? 'border-brand-blue bg-blue-50' : 'border-gray-200'}`}
-              onClick={() => onChange(option)}
+        <div className="space-y-2 mb-4">
+          {item.options.map((option, idx) => (
+            <Button
+              key={idx}
+              type="button"
+              variant={response === option ? "default" : "outline"}
+              size="sm"
+              onClick={() => onResponseChange(option)}
+              className="mr-2 mb-2"
             >
-              <div className={`w-4 h-4 rounded-full border flex items-center justify-center
-                ${response === option ? 'border-brand-blue' : 'border-gray-300'}`}>
-                {response === option && <div className="w-2 h-2 bg-brand-blue rounded-full"></div>}
-              </div>
-              <span>{option}</span>
-            </div>
+              {option}
+            </Button>
           ))}
         </div>
       )}
       
-      {response !== undefined && (
-        <div className="mt-3">
-          <p className="text-sm text-gray-500 mb-1">Additional notes (optional)</p>
-          <Textarea 
-            placeholder="Add any notes about this question..."
-            className="text-sm"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-        </div>
+      {item.type === 'text' && (
+        <Textarea
+          value={response as string || ""}
+          onChange={(e) => onResponseChange(e.target.value)}
+          placeholder="Enter your response"
+          className="mb-4"
+        />
       )}
+      
+      {item.type === 'numeric' && (
+        <Input
+          type="number"
+          value={response as string || ""}
+          onChange={(e) => onResponseChange(e.target.value)}
+          placeholder="Enter a number"
+          className="mb-4"
+        />
+      )}
+      
+      <div>
+        <p className="text-sm text-gray-600 mb-2">Additional Notes (optional)</p>
+        <Textarea
+          value={notes}
+          onChange={(e) => onNotesChange(e.target.value)}
+          placeholder="Add notes here..."
+          rows={2}
+        />
+      </div>
     </div>
   );
 };
