@@ -7,6 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { BarChart3, FileDown, FilePieChart, Filter, Printer } from 'lucide-react';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
 
 const ReportsList = () => {
   const [activeTab, setActiveTab] = useState('audit-reports');
@@ -22,6 +29,49 @@ const ReportsList = () => {
     { id: '2', title: 'Location Compliance Ranking', date: '2023-06-15', locations: 8, metrics: 24 },
     { id: '3', title: 'Issue Resolution Time Analysis', date: '2023-05-30', issues: 67, avgResolutionDays: 3.5 },
   ];
+
+  const handleDownload = (reportId: string, reportTitle: string, format: 'pdf' | 'csv' | 'excel') => {
+    // In a real application, this would call an API endpoint to generate and download the report
+    console.log(`Downloading report ${reportId} in ${format} format`);
+    
+    // Simulate download delay
+    setTimeout(() => {
+      toast.success(`${reportTitle} downloaded successfully in ${format.toUpperCase()} format`);
+    }, 1000);
+    
+    // Fake file download for demonstration
+    const element = document.createElement('a');
+    let fileExtension = '';
+    
+    switch (format) {
+      case 'pdf':
+        fileExtension = 'pdf';
+        element.setAttribute('href', 'data:application/pdf;charset=utf-8,');
+        break;
+      case 'csv':
+        fileExtension = 'csv';
+        element.setAttribute('href', 'data:text/csv;charset=utf-8,');
+        break;
+      case 'excel':
+        fileExtension = 'xlsx';
+        element.setAttribute('href', 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8,');
+        break;
+    }
+    
+    element.setAttribute('download', `${reportTitle.replace(/\s+/g, '-').toLowerCase()}.${fileExtension}`);
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  const handleBulkExport = (format: 'pdf' | 'csv' | 'excel') => {
+    const reports = activeTab === 'audit-reports' ? auditReports : performanceReports;
+    toast.info(`Preparing ${reports.length} reports for bulk export in ${format.toUpperCase()} format`);
+    
+    setTimeout(() => {
+      toast.success(`All reports exported successfully in ${format.toUpperCase()} format`);
+    }, 2000);
+  };
 
   return (
     <MainLayout>
@@ -48,10 +98,25 @@ const ReportsList = () => {
                 </div>
               </DialogContent>
             </Dialog>
-            <Button size="sm" className="flex items-center gap-2">
-              <FileDown className="h-4 w-4" />
-              Export
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" className="flex items-center gap-2">
+                  <FileDown className="h-4 w-4" />
+                  Export All
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleBulkExport('pdf')}>
+                  Export All as PDF
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleBulkExport('csv')}>
+                  Export All as CSV
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleBulkExport('excel')}>
+                  Export All as Excel
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -98,10 +163,25 @@ const ReportsList = () => {
                               <Printer className="h-4 w-4" />
                               <span className="sr-only">Print</span>
                             </Button>
-                            <Button variant="ghost" size="icon">
-                              <FileDown className="h-4 w-4" />
-                              <span className="sr-only">Download</span>
-                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <FileDown className="h-4 w-4" />
+                                  <span className="sr-only">Download</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => handleDownload(report.id, report.title, 'pdf')}>
+                                  Download as PDF
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDownload(report.id, report.title, 'csv')}>
+                                  Download as CSV
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDownload(report.id, report.title, 'excel')}>
+                                  Download as Excel
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
                         </TableCell>
                       </TableRow>
@@ -147,10 +227,25 @@ const ReportsList = () => {
                               <Printer className="h-4 w-4" />
                               <span className="sr-only">Print</span>
                             </Button>
-                            <Button variant="ghost" size="icon">
-                              <FileDown className="h-4 w-4" />
-                              <span className="sr-only">Download</span>
-                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <FileDown className="h-4 w-4" />
+                                  <span className="sr-only">Download</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => handleDownload(report.id, report.title, 'pdf')}>
+                                  Download as PDF
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDownload(report.id, report.title, 'csv')}>
+                                  Download as CSV
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleDownload(report.id, report.title, 'excel')}>
+                                  Download as Excel
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
                         </TableCell>
                       </TableRow>
