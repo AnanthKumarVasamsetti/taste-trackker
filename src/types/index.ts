@@ -58,6 +58,26 @@ export type AuditResponseType = {
   notes?: string;
 };
 
+// Analytics Types
+export type AnalyticsChartDataPoint = {
+  name: string;
+  value: number;
+  category?: string;
+  percentage?: number;
+};
+
+export type ComplianceTrendDataPoint = {
+  date: string;
+  category: string;
+  value: number;
+};
+
+export type IssueTypeDataPoint = {
+  name: string;
+  count: number;
+  severity: 'high' | 'medium' | 'low';
+};
+
 // Database Schema Types
 export interface DbSchema {
   users: UserTable;
@@ -135,6 +155,7 @@ export interface AuditItemTable {
   order_index: number; // For ordering items within a section
   created_at: string;
   updated_at: string;
+  category?: string; // Optional category for analytics grouping
 }
 
 export interface AuditResponseTable {

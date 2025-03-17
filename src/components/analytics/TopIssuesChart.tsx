@@ -2,15 +2,17 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { TopIssueData } from '@/data/analyticsService';
 
-const data = [
-  { issue: 'Temperature Control', count: 32, severity: 'high' },
-  { issue: 'Hand Washing', count: 28, severity: 'high' },
-  { issue: 'Date Labeling', count: 24, severity: 'medium' },
-  { issue: 'Storage Practices', count: 18, severity: 'medium' },
-  { issue: 'Cleaning Schedule', count: 15, severity: 'low' },
-  { issue: 'Pest Control', count: 12, severity: 'medium' },
-  { issue: 'Equipment Maintenance', count: 10, severity: 'low' },
+// Default data (used when no data is provided)
+const defaultData: TopIssueData[] = [
+  { issue: 'Temperature Control', count: 32, severity: 'high', category: 'Food Safety' },
+  { issue: 'Hand Washing', count: 28, severity: 'high', category: 'Hygiene' },
+  { issue: 'Date Labeling', count: 24, severity: 'medium', category: 'Documentation' },
+  { issue: 'Storage Practices', count: 18, severity: 'medium', category: 'Food Safety' },
+  { issue: 'Cleaning Schedule', count: 15, severity: 'low', category: 'Hygiene' },
+  { issue: 'Pest Control', count: 12, severity: 'medium', category: 'Food Safety' },
+  { issue: 'Equipment Maintenance', count: 10, severity: 'low', category: 'Documentation' },
 ];
 
 const config = {
@@ -41,9 +43,17 @@ const getBarColor = (severity: string) => {
   }
 };
 
-export const TopIssuesChart = () => {
+interface TopIssuesChartProps {
+  data?: TopIssueData[];
+  height?: number;
+}
+
+export const TopIssuesChart: React.FC<TopIssuesChartProps> = ({
+  data = defaultData,
+  height = 300
+}) => {
   return (
-    <ChartContainer className="h-[300px]" config={config}>
+    <ChartContainer className={`h-[${height}px]`} config={config}>
       <BarChart 
         data={data} 
         margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
@@ -62,6 +72,7 @@ export const TopIssuesChart = () => {
             <ChartTooltipContent 
               formatter={(value, name, { payload }) => {
                 const severity = payload.severity;
+                const category = payload.category;
                 return [
                   value, 
                   <span>
@@ -71,6 +82,9 @@ export const TopIssuesChart = () => {
                       color: 'white'
                     }}>
                       {severity.toUpperCase()}
+                    </span>
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {category}
                     </span>
                   </span>
                 ];

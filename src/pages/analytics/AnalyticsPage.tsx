@@ -1,10 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { FileDown, Calendar, HelpCircle, FilterX } from 'lucide-react';
+import { FileDown, Calendar, HelpCircle, FilterX, RefreshCw } from 'lucide-react';
 import { AuditOverviewChart } from '@/components/analytics/AuditOverviewChart';
 import { ComplianceRateChart } from '@/components/analytics/ComplianceRateChart';
 import { TopIssuesChart } from '@/components/analytics/TopIssuesChart';
@@ -15,6 +15,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { DateRange } from 'react-day-picker';
 import { format } from 'date-fns';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { useAnalyticsData } from '@/hooks/useAnalyticsData';
+import { AnalyticsFilters } from '@/data/analyticsService';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const AnalyticsPage = () => {
   const [date, setDate] = useState<DateRange | undefined>({
@@ -23,11 +26,58 @@ const AnalyticsPage = () => {
   });
   const [location, setLocation] = useState<string>("all");
   const [showFilters, setShowFilters] = useState<boolean>(false);
+  const [auditor, setAuditor] = useState<string>("all");
+  const [category, setCategory] = useState<string>("all");
+  const [status, setStatus] = useState<string>("all");
+
+  // Create filters object for the API
+  const [apiFilters, setApiFilters] = useState<AnalyticsFilters>({
+    dateRange: date,
+    location: location !== "all" ? location : undefined,
+    auditorId: auditor !== "all" ? auditor : undefined,
+    category: category !== "all" ? category : undefined,
+    status: status !== "all" ? status : undefined,
+  });
+
+  // Fetch data using the hook
+  const {
+    auditCompletionData,
+    complianceRateData,
+    topIssues,
+    auditorPerformance,
+    locationComparison,
+    isLoading,
+    error,
+    refreshData,
+    setFilters
+  } = useAnalyticsData(apiFilters);
+
+  // Update API filters when selections change
+  useEffect(() => {
+    setApiFilters({
+      dateRange: date,
+      location: location !== "all" ? location : undefined,
+      auditorId: auditor !== "all" ? auditor : undefined,
+      category: category !== "all" ? category : undefined,
+      status: status !== "all" ? status : undefined,
+    });
+  }, [date, location, auditor, category, status]);
+
+  // Update filters when apiFilters change
+  useEffect(() => {
+    setFilters(apiFilters);
+  }, [apiFilters, setFilters]);
 
   const formatDateRange = () => {
     if (!date?.from) return 'Last 30 Days';
     if (!date.to) return `Since ${format(date.from, 'MMM d, yyyy')}`;
     return `${format(date.from, 'MMM d')} - ${format(date.to, 'MMM d, yyyy')}`;
+  };
+
+  const handleExport = () => {
+    // In a real implementation, this would generate a PDF or CSV export
+    console.log('Exporting analytics data...');
+    alert('Analytics data export started. Your file will be ready for download shortly.');
   };
 
   return (
@@ -68,12 +118,35 @@ const AnalyticsPage = () => {
               {showFilters ? "Hide Filters" : "Show Filters"}
             </Button>
             
-            <Button size="sm" className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+              onClick={refreshData}
+              disabled={isLoading}
+            >
+              <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            
+            <Button 
+              size="sm" 
+              className="flex items-center gap-2"
+              onClick={handleExport}
+            >
               <FileDown className="h-4 w-4" />
               Export
             </Button>
           </div>
         </div>
+
+        {error && (
+          <Card className="bg-red-50 border-red-200">
+            <CardContent className="pt-6">
+              <p className="text-red-700">Error loading analytics data. Please try refreshing the page.</p>
+            </CardContent>
+          </Card>
+        )}
 
         {showFilters && (
           <Card className="bg-muted/50">
@@ -91,29 +164,31 @@ const AnalyticsPage = () => {
                       <SelectItem value="chicago">Chicago</SelectItem>
                       <SelectItem value="los-angeles">Los Angeles</SelectItem>
                       <SelectItem value="miami">Miami</SelectItem>
+                      <SelectItem value="seattle">Seattle</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
                 <div>
                   <label className="text-sm font-medium mb-1 block">Auditor</label>
-                  <Select defaultValue="all">
+                  <Select value={auditor} onValueChange={setAuditor}>
                     <SelectTrigger>
                       <SelectValue placeholder="All Auditors" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Auditors</SelectItem>
-                      <SelectItem value="john-smith">John Smith</SelectItem>
-                      <SelectItem value="sarah-johnson">Sarah Johnson</SelectItem>
-                      <SelectItem value="mike-chen">Mike Chen</SelectItem>
-                      <SelectItem value="kim-lee">Kim Lee</SelectItem>
+                      <SelectItem value="auditor-1">John Doe</SelectItem>
+                      <SelectItem value="auditor-2">Jane Smith</SelectItem>
+                      <SelectItem value="auditor-3">Michael Johnson</SelectItem>
+                      <SelectItem value="auditor-4">Sarah Williams</SelectItem>
+                      <SelectItem value="auditor-5">David Brown</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
                 <div>
                   <label className="text-sm font-medium mb-1 block">Issue Category</label>
-                  <Select defaultValue="all">
+                  <Select value={category} onValueChange={setCategory}>
                     <SelectTrigger>
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
@@ -128,7 +203,7 @@ const AnalyticsPage = () => {
                 
                 <div>
                   <label className="text-sm font-medium mb-1 block">Compliance Status</label>
-                  <Select defaultValue="all">
+                  <Select value={status} onValueChange={setStatus}>
                     <SelectTrigger>
                       <SelectValue placeholder="All Statuses" />
                     </SelectTrigger>
@@ -172,7 +247,11 @@ const AnalyticsPage = () => {
                   <CardDescription>Monthly audit completion breakdown</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <AuditOverviewChart />
+                  {isLoading ? (
+                    <Skeleton className="h-[300px] w-full" />
+                  ) : (
+                    <AuditOverviewChart data={auditCompletionData} />
+                  )}
                 </CardContent>
               </Card>
               <Card>
@@ -191,7 +270,11 @@ const AnalyticsPage = () => {
                   <CardDescription>Overall compliance performance</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <ComplianceRateChart />
+                  {isLoading ? (
+                    <Skeleton className="h-[300px] w-full" />
+                  ) : (
+                    <ComplianceRateChart data={complianceRateData} />
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -214,7 +297,11 @@ const AnalyticsPage = () => {
                 <CardDescription>Compliance rates over time by category</CardDescription>
               </CardHeader>
               <CardContent className="h-96">
-                <ComplianceRateChart />
+                {isLoading ? (
+                  <Skeleton className="h-[384px] w-full" />
+                ) : (
+                  <ComplianceRateChart data={complianceRateData} />
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -236,7 +323,11 @@ const AnalyticsPage = () => {
                 <CardDescription>Most common non-compliance issues</CardDescription>
               </CardHeader>
               <CardContent className="h-96">
-                <TopIssuesChart />
+                {isLoading ? (
+                  <Skeleton className="h-[384px] w-full" />
+                ) : (
+                  <TopIssuesChart data={topIssues} height={384} />
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -258,7 +349,11 @@ const AnalyticsPage = () => {
                 <CardDescription>Comparison of auditor efficiency and productivity</CardDescription>
               </CardHeader>
               <CardContent className="h-96">
-                <AuditorPerformanceChart />
+                {isLoading ? (
+                  <Skeleton className="h-[384px] w-full" />
+                ) : (
+                  <AuditorPerformanceChart data={auditorPerformance} />
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -280,7 +375,11 @@ const AnalyticsPage = () => {
                 <CardDescription>Compliance rates across different locations</CardDescription>
               </CardHeader>
               <CardContent className="h-96">
-                <LocationComparisonChart />
+                {isLoading ? (
+                  <Skeleton className="h-[384px] w-full" />
+                ) : (
+                  <LocationComparisonChart data={locationComparison} />
+                )}
               </CardContent>
             </Card>
           </TabsContent>
