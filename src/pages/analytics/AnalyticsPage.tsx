@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -20,26 +19,28 @@ import { AnalyticsFilters } from '@/data/analyticsService';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const AnalyticsPage = () => {
-  const [date, setDate] = useState<DateRange | undefined>({
+  const [date, setDate] = useState<DateRange>({
     from: new Date(new Date().setDate(new Date().getDate() - 30)),
     to: new Date(),
   });
+  
   const [location, setLocation] = useState<string>("all");
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [auditor, setAuditor] = useState<string>("all");
   const [category, setCategory] = useState<string>("all");
   const [status, setStatus] = useState<string>("all");
 
-  // Create filters object for the API
   const [apiFilters, setApiFilters] = useState<AnalyticsFilters>({
-    dateRange: date,
+    dateRange: { 
+      from: date.from || new Date(new Date().setDate(new Date().getDate() - 30)), 
+      to: date.to || new Date() 
+    },
     location: location !== "all" ? location : undefined,
     auditorId: auditor !== "all" ? auditor : undefined,
     category: category !== "all" ? category : undefined,
     status: status !== "all" ? status : undefined,
   });
 
-  // Fetch data using the hook
   const {
     auditCompletionData,
     complianceRateData,
@@ -52,10 +53,12 @@ const AnalyticsPage = () => {
     setFilters
   } = useAnalyticsData(apiFilters);
 
-  // Update API filters when selections change
   useEffect(() => {
     setApiFilters({
-      dateRange: date,
+      dateRange: { 
+        from: date.from || new Date(new Date().setDate(new Date().getDate() - 30)), 
+        to: date.to || new Date() 
+      },
       location: location !== "all" ? location : undefined,
       auditorId: auditor !== "all" ? auditor : undefined,
       category: category !== "all" ? category : undefined,
@@ -63,7 +66,6 @@ const AnalyticsPage = () => {
     });
   }, [date, location, auditor, category, status]);
 
-  // Update filters when apiFilters change
   useEffect(() => {
     setFilters(apiFilters);
   }, [apiFilters, setFilters]);
@@ -75,7 +77,6 @@ const AnalyticsPage = () => {
   };
 
   const handleExport = () => {
-    // In a real implementation, this would generate a PDF or CSV export
     console.log('Exporting analytics data...');
     alert('Analytics data export started. Your file will be ready for download shortly.');
   };
