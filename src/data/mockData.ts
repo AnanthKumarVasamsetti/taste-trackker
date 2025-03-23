@@ -48,13 +48,24 @@ export const mockAudits: AuditType[] = [
             id: "item-1",
             question: "Are food preparation surfaces cleaned and sanitized regularly?",
             type: "yes-no",
-            required: true
+            required: true,
+            response: false,
+            notes: "Several cutting boards showed signs of cross-contamination between raw meat and vegetables. Immediate cleaning protocol revision needed."
           },
           {
             id: "item-2",
             question: "Is the refrigerator temperature maintained below 40°F (4°C)?",
             type: "yes-no",
-            required: true
+            required: true,
+            response: true
+          },
+          {
+            id: "item-3",
+            question: "Are all utensils properly sanitized after each use?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "Staff observed reusing utensils without proper sanitization between different food items."
           }
         ]
       },
@@ -63,16 +74,48 @@ export const mockAudits: AuditType[] = [
         title: "Food Storage",
         items: [
           {
-            id: "item-3",
+            id: "item-4",
             question: "Are raw foods stored separately from ready-to-eat foods?",
             type: "yes-no",
-            required: true
+            required: true,
+            response: true
           },
           {
-            id: "item-4",
+            id: "item-5",
             question: "Are all food items properly labeled and dated?",
             type: "yes-no",
-            required: true
+            required: true,
+            response: false,
+            notes: "Multiple containers found without date labels in walk-in cooler. Staff need retraining on labeling protocols."
+          },
+          {
+            id: "item-6",
+            question: "Are dry goods stored at least 6 inches off the floor?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "Several bags of flour and rice found directly on the floor in the storage area."
+          }
+        ]
+      },
+      {
+        id: "section-3",
+        title: "Employee Hygiene",
+        items: [
+          {
+            id: "item-7",
+            question: "Do employees wash hands between tasks?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "Multiple staff members observed not washing hands when switching between food handling tasks."
+          },
+          {
+            id: "item-8",
+            question: "Are proper hair restraints worn by all food handlers?",
+            type: "yes-no",
+            required: true,
+            response: true
           }
         ]
       }
@@ -97,13 +140,38 @@ export const mockAudits: AuditType[] = [
             id: "item-1",
             question: "Are all production line employees wearing proper PPE?",
             type: "yes-no",
-            required: true
+            required: true,
+            response: false,
+            notes: "3 employees found without required safety gloves during food handling. Immediate corrective action required."
           },
           {
             id: "item-2",
             question: "Is equipment being sanitized between production runs?",
             type: "yes-no",
-            required: true
+            required: true,
+            response: false,
+            notes: "Sanitization logs incomplete for night shift operations. No evidence of proper cleaning between product changeovers."
+          }
+        ]
+      },
+      {
+        id: "section-2",
+        title: "Quality Control",
+        items: [
+          {
+            id: "item-3",
+            question: "Are batch samples tested according to schedule?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "QC testing logs show gaps for 3 consecutive production days. Testing procedure not followed consistently."
+          },
+          {
+            id: "item-4",
+            question: "Are testing records properly maintained and accessible?",
+            type: "yes-no",
+            required: true,
+            response: true
           }
         ]
       }
@@ -137,6 +205,28 @@ export const mockAudits: AuditType[] = [
             type: "yes-no",
             required: true,
             response: true
+          }
+        ]
+      },
+      {
+        id: "section-2",
+        title: "Storage and Refrigeration",
+        items: [
+          {
+            id: "item-3",
+            question: "Is the refrigerator temperature recorded daily?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "Temperature log missing entries for 5 days in the past month."
+          },
+          {
+            id: "item-4",
+            question: "Are food deliveries checked and dated upon receipt?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "No documentation found for recent dairy deliveries. Staff unable to verify expiration dates."
           }
         ]
       }
