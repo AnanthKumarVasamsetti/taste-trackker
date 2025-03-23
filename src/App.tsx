@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import AuditsList from "./pages/audits/AuditsList";
 import AuditDetail from "./pages/audits/AuditDetail";
 import CreateAudit from "./pages/audits/CreateAudit";
+import NonCompliancePreview from "./pages/audits/NonCompliancePreview";
 import AuditorsList from "./pages/auditors/AuditorsList";
 import ReportsList from "./pages/reports/ReportsList";
 import SettingsPage from "./pages/settings/SettingsPage";
@@ -19,6 +20,7 @@ import Login from "./pages/Login";
 import MobileIndex from "./pages/mobile/Index";
 import MobileAuditsList from "./pages/mobile/AuditsList";
 import MobileAuditDetail from "./pages/mobile/AuditDetail";
+import MobileNonCompliancePreview from "./pages/mobile/NonCompliancePreview";
 import MobileProfile from "./pages/mobile/Profile";
 
 const queryClient = new QueryClient();
@@ -37,6 +39,7 @@ const App = () => (
           <Route path="/audits/:id" element={<AuditDetail />} />
           <Route path="/audits/new" element={<CreateAudit />} />
           <Route path="/audits/edit/:id" element={<AuditDetail />} />
+          <Route path="/audits/:id/non-compliance" element={<NonCompliancePreview />} />
           <Route path="/auditors" element={<AuditorsList />} />
           <Route path="/reports" element={<ReportsList />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
@@ -46,6 +49,7 @@ const App = () => (
           <Route path="/mobile" element={<MobileIndex />} />
           <Route path="/mobile/audits" element={<MobileAuditsList />} />
           <Route path="/mobile/audits/:id" element={<MobileAuditDetail />} />
+          <Route path="/mobile/audits/:id/non-compliance" element={<MobileNonCompliancePreview />} />
           <Route path="/mobile/profile" element={<MobileProfile />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

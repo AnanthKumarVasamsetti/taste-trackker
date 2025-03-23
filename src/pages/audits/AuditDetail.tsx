@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { mockAudits, mockAuditors } from "@/data/mockData";
 import { Link, useParams } from "react-router-dom";
-import { ClipboardCheck, Calendar, MapPin, User, Clock } from "lucide-react";
+import { ClipboardCheck, Calendar, MapPin, User, Clock, FileText, AlertTriangle } from "lucide-react";
 import { AuditSectionType } from "@/types";
 
 const AuditDetail = () => {
@@ -48,6 +48,11 @@ const AuditDetail = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
+
+  // Count non-compliant items (those with false responses)
+  const nonCompliantCount = audit.sections.reduce((count, section) => {
+    return count + section.items.filter(item => item.response === false).length;
+  }, 0);
 
   return (
     <MainLayout>
@@ -144,6 +149,28 @@ const AuditDetail = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {nonCompliantCount > 0 && (
+              <Card className="border-red-200">
+                <CardHeader className="bg-red-50 border-b border-red-200">
+                  <CardTitle className="text-lg flex items-center">
+                    <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
+                    Non-Compliance Report
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <p className="text-sm mb-3">
+                    This audit has {nonCompliantCount} non-compliant {nonCompliantCount === 1 ? 'item' : 'items'} that require attention.
+                  </p>
+                  <Link to={`/audits/${id}/non-compliance`}>
+                    <Button className="w-full bg-red-100 text-red-800 hover:bg-red-200 border border-red-200">
+                      <FileText className="h-4 w-4 mr-2" />
+                      View Non-Compliance Report
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
 
             <Card>
               <CardHeader>
