@@ -1,4 +1,3 @@
-
 export type AuditorType = {
   id: string;
   name: string;
@@ -8,7 +7,7 @@ export type AuditorType = {
   assignedAudits: string[];
 };
 
-export type AuditStatus = 'pending' | 'in-progress' | 'completed';
+export type AuditStatus = 'pending' | 'in-progress' | 'completed' | 'in-review';
 
 export type AuditSectionType = {
   id: string;

@@ -10,6 +10,8 @@ import AuditsList from "./pages/audits/AuditsList";
 import AuditDetail from "./pages/audits/AuditDetail";
 import CreateAudit from "./pages/audits/CreateAudit";
 import NonCompliancePreview from "./pages/audits/NonCompliancePreview";
+import AuditsInReviewPage from "./pages/audits/AuditsInReviewPage";
+import AuditReviewPage from "./pages/audits/AuditReviewPage";
 import AuditorsList from "./pages/auditors/AuditorsList";
 import ReportsList from "./pages/reports/ReportsList";
 import SettingsPage from "./pages/settings/SettingsPage";
@@ -40,6 +42,8 @@ const App = () => (
           <Route path="/audits/new" element={<CreateAudit />} />
           <Route path="/audits/edit/:id" element={<AuditDetail />} />
           <Route path="/audits/:id/non-compliance" element={<NonCompliancePreview />} />
+          <Route path="/audits/in-review" element={<AuditsInReviewPage />} />
+          <Route path="/audits/review/:id" element={<AuditReviewPage />} />
           <Route path="/auditors" element={<AuditorsList />} />
           <Route path="/reports" element={<ReportsList />} />
           <Route path="/analytics" element={<AnalyticsPage />} />

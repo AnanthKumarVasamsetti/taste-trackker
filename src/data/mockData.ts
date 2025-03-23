@@ -1,4 +1,3 @@
-
 import { AuditType, AuditorType } from "@/types";
 
 export const mockAuditors: AuditorType[] = [
@@ -227,6 +226,116 @@ export const mockAudits: AuditType[] = [
             required: true,
             response: false,
             notes: "No documentation found for recent dairy deliveries. Staff unable to verify expiration dates."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "audit-4",
+    title: "Quarterly Food Safety Inspection",
+    description: "Comprehensive food safety audit for downtown cafeteria",
+    location: "567 Oak Street, Dallas, TX",
+    dueDate: "2023-11-30",
+    createdAt: "2023-10-15",
+    updatedAt: "2023-11-01",
+    status: "in-review",
+    auditorId: "auditor-2",
+    sections: [
+      {
+        id: "section-1",
+        title: "Food Handling",
+        items: [
+          {
+            id: "item-1",
+            question: "Are all food handlers wearing proper gloves?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "Two staff members observed handling ready-to-eat foods without gloves."
+          },
+          {
+            id: "item-2",
+            question: "Is there proper separation between raw and cooked foods?",
+            type: "yes-no",
+            required: true,
+            response: true
+          }
+        ]
+      },
+      {
+        id: "section-2",
+        title: "Temperature Control",
+        items: [
+          {
+            id: "item-3",
+            question: "Are refrigerators maintaining temperatures below 40°F?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "Dairy refrigerator recorded at 44°F, maintenance request submitted."
+          },
+          {
+            id: "item-4",
+            question: "Are hot-holding units maintaining foods above 135°F?",
+            type: "yes-no",
+            required: true,
+            response: true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "audit-5",
+    title: "Bakery Health Inspection",
+    description: "Annual health inspection for Sweet Delights Bakery",
+    location: "123 Pastry Lane, Phoenix, AZ",
+    dueDate: "2023-11-15",
+    createdAt: "2023-10-10",
+    updatedAt: "2023-10-30",
+    status: "in-review",
+    auditorId: "auditor-3",
+    sections: [
+      {
+        id: "section-1",
+        title: "Hygiene Standards",
+        items: [
+          {
+            id: "item-1",
+            question: "Are handwashing stations properly supplied and accessible?",
+            type: "yes-no",
+            required: true,
+            response: true
+          },
+          {
+            id: "item-2",
+            question: "Are all food contact surfaces cleaned and sanitized regularly?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "Mixing equipment had residue from previous day's production."
+          }
+        ]
+      },
+      {
+        id: "section-2",
+        title: "Allergen Management",
+        items: [
+          {
+            id: "item-3",
+            question: "Are allergens properly labeled on all products?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "Three products found with incomplete allergen information on labels."
+          },
+          {
+            id: "item-4",
+            question: "Is there a protocol for preventing cross-contamination of allergens?",
+            type: "yes-no",
+            required: true,
+            response: true
           }
         ]
       }
