@@ -340,5 +340,87 @@ export const mockAudits: AuditType[] = [
         ]
       }
     ]
-  }
+  },
+  {
+    id: "audit-in1",
+    title: "Kitchen Hygiene Audit - Restaurant A",
+    description: "Comprehensive hygiene and safety compliance check in Restaurant A.",
+    location: "Restaurant A - Main Kitchen",
+    dueDate: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    status: "in-review",
+    auditorId: "auditor1",
+    sections: [
+      {
+        id: "sec1",
+        title: "Cleaning Procedures",
+        items: [
+          {
+            id: "item1",
+            question: "Are cleaning chemicals labeled and stored properly?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "Chemicals were stored incorrectly under sink.",
+          },
+          {
+            id: "item2",
+            question: "Are cleaning schedules documented?",
+            type: "yes-no",
+            required: true,
+            response: true,
+          },
+        ],
+      },
+    ],
+    notes: "",
+  },
+  {
+    id: "audit-in2",
+    title: "Cold Storage Inspection - Warehouse",
+    description:
+      "Inspection of cold storage facilities for compliance with temperature regulation.",
+    location: "Warehouse Cold Storage",
+    dueDate: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    status: "in-review",
+    auditorId: "auditor2",
+    sections: [
+      {
+        id: "sec2",
+        title: "Temperature Control",
+        items: [
+          {
+            id: "item3",
+            question: "Is the temperature log up to date?",
+            type: "yes-no",
+            required: true,
+            response: false,
+            notes: "Missing two days of temperature logs.",
+          },
+        ],
+      },
+    ],
+    notes: "",
+  },
+];
+
+export const mockAuditors = [
+  {
+    id: "auditor1",
+    name: "Alice Johnson",
+    email: "alice.johnson@example.com",
+    phone: "555-1234",
+    role: "Food Safety Specialist",
+    assignedAudits: ["audit-in1"],
+  },
+  {
+    id: "auditor2",
+    name: "Bob Smith",
+    email: "bob.smith@example.com",
+    role: "Quality Assurance Auditor",
+    assignedAudits: ["audit-in2"],
+  },
 ];

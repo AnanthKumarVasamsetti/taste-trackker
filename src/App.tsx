@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -48,14 +47,14 @@ const App = () => (
           <Route path="/reports" element={<ReportsList />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          
+
           {/* Mobile PWA Routes */}
           <Route path="/mobile" element={<MobileIndex />} />
           <Route path="/mobile/audits" element={<MobileAuditsList />} />
           <Route path="/mobile/audits/:id" element={<MobileAuditDetail />} />
           <Route path="/mobile/audits/:id/non-compliance" element={<MobileNonCompliancePreview />} />
           <Route path="/mobile/profile" element={<MobileProfile />} />
-          
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
