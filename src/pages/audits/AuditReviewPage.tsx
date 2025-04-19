@@ -19,6 +19,7 @@ import { formatDistanceToNow } from "date-fns";
 import NonComplianceReport from "@/components/reports/NonComplianceReport";
 import TechnicalReviewForm from "@/components/reports/TechnicalReviewForm";
 import { toast } from "sonner";
+import { AuditType } from "@/types";
 
 // Dummy audits with "in-review" status for demonstration
 const mockInReviewAudits: AuditType[] = [
