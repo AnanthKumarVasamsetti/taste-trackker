@@ -78,6 +78,7 @@ const NonComplianceReport: React.FC<NonComplianceReportProps> = ({ audit }) => {
       <CardContent className="p-6">
         {items.length > 0 ? (
           <div className="space-y-6">
+            {/* Table with static view for status (no edits) */}
             <Table>
               <TableHeader>
                 <TableRow>
@@ -96,23 +97,12 @@ const NonComplianceReport: React.FC<NonComplianceReportProps> = ({ audit }) => {
                       <Badge variant="outline">{item.sectionTitle}</Badge>
                     </TableCell>
                     <TableCell>
-                      <RadioGroup
-                        value={item.response ? "yes" : "no"}
-                        onValueChange={(value) =>
-                          handleResponseChange(item.id, value === "yes")
-                        }
-                        className="flex space-x-2"
-                        aria-label={`Edit compliance status for issue #${index + 1}`}
-                      >
-                        <label className="flex items-center space-x-1 cursor-pointer">
-                          <RadioGroupItem value="yes" id={`${item.id}-yes`} />
-                          <span>Yes</span>
-                        </label>
-                        <label className="flex items-center space-x-1 cursor-pointer">
-                          <RadioGroupItem value="no" id={`${item.id}-no`} />
-                          <span>No</span>
-                        </label>
-                      </RadioGroup>
+                      {/* Render static text for status */}
+                      {item.response ? (
+                        <span className="text-green-600 font-semibold">Yes</span>
+                      ) : (
+                        <span className="text-red-600 font-semibold">No</span>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -121,6 +111,7 @@ const NonComplianceReport: React.FC<NonComplianceReportProps> = ({ audit }) => {
 
             <Separator className="my-6" />
 
+            {/* Detailed Findings with editable status and notes */}
             <div className="space-y-6">
               <h3 className="text-lg font-semibold">Detailed Findings</h3>
               {items.map((item, index) => (
@@ -137,6 +128,28 @@ const NonComplianceReport: React.FC<NonComplianceReportProps> = ({ audit }) => {
                     </Badge>
                   </div>
                   <p className="text-gray-700 font-medium">{item.question}</p>
+                  <div>
+                    <label className="block mb-1 font-medium text-sm">
+                      Status:
+                    </label>
+                    <RadioGroup
+                      value={item.response ? "yes" : "no"}
+                      onValueChange={(value) =>
+                        handleResponseChange(item.id, value === "yes")
+                      }
+                      className="flex space-x-4"
+                      aria-label={`Edit compliance status for issue #${index + 1}`}
+                    >
+                      <label className="flex items-center space-x-1 cursor-pointer">
+                        <RadioGroupItem value="yes" id={`${item.id}-yes`} />
+                        <span>Yes</span>
+                      </label>
+                      <label className="flex items-center space-x-1 cursor-pointer">
+                        <RadioGroupItem value="no" id={`${item.id}-no`} />
+                        <span>No</span>
+                      </label>
+                    </RadioGroup>
+                  </div>
                   <div>
                     <label
                       htmlFor={`notes-${item.id}`}
@@ -171,3 +184,4 @@ const NonComplianceReport: React.FC<NonComplianceReportProps> = ({ audit }) => {
 };
 
 export default NonComplianceReport;
+
