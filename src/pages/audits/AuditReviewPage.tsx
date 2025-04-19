@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -22,7 +21,7 @@ import TechnicalReviewForm from "@/components/reports/TechnicalReviewForm";
 import { toast } from "sonner";
 
 // Dummy audits with "in-review" status for demonstration
-const mockInReviewAudits = [
+const mockInReviewAudits: AuditType[] = [
   {
     id: "audit-in1",
     title: "Kitchen Hygiene Audit - Restaurant A",
@@ -31,7 +30,7 @@ const mockInReviewAudits = [
     dueDate: new Date().toISOString(),
     createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
     updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    status: "in-review",
+    status: "in-review" as const,
     auditorId: "auditor1",
     sections: [
       {
@@ -61,12 +60,13 @@ const mockInReviewAudits = [
   {
     id: "audit-in2",
     title: "Cold Storage Inspection - Warehouse",
-    description: "Inspection of cold storage facilities for compliance with temperature regulation.",
+    description:
+      "Inspection of cold storage facilities for compliance with temperature regulation.",
     location: "Warehouse Cold Storage",
     dueDate: new Date().toISOString(),
     createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
     updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    status: "in-review",
+    status: "in-review" as const,
     auditorId: "auditor2",
     sections: [
       {

@@ -1,3 +1,4 @@
+
 import { AuditType, AuditorType } from "@/types";
 
 export const mockAuditors: AuditorType[] = [
@@ -24,7 +25,22 @@ export const mockAuditors: AuditorType[] = [
     phone: "+1 (555) 246-8101",
     role: "Quality Assurance",
     assignedAudits: []
-  }
+  },
+  {
+    id: "auditor1",
+    name: "Alice Johnson",
+    email: "alice.johnson@example.com",
+    phone: "555-1234",
+    role: "Food Safety Specialist",
+    assignedAudits: ["audit-in1"],
+  },
+  {
+    id: "auditor2",
+    name: "Bob Smith",
+    email: "bob.smith@example.com",
+    role: "Quality Assurance Auditor",
+    assignedAudits: ["audit-in2"],
+  },
 ];
 
 export const mockAudits: AuditType[] = [
@@ -404,23 +420,5 @@ export const mockAudits: AuditType[] = [
       },
     ],
     notes: "",
-  },
-];
-
-export const mockAuditors = [
-  {
-    id: "auditor1",
-    name: "Alice Johnson",
-    email: "alice.johnson@example.com",
-    phone: "555-1234",
-    role: "Food Safety Specialist",
-    assignedAudits: ["audit-in1"],
-  },
-  {
-    id: "auditor2",
-    name: "Bob Smith",
-    email: "bob.smith@example.com",
-    role: "Quality Assurance Auditor",
-    assignedAudits: ["audit-in2"],
   },
 ];
