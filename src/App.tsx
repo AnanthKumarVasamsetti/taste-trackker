@@ -23,6 +23,7 @@ import MobileAuditsList from "./pages/mobile/AuditsList";
 import MobileAuditDetail from "./pages/mobile/AuditDetail";
 import MobileNonCompliancePreview from "./pages/mobile/NonCompliancePreview";
 import MobileProfile from "./pages/mobile/Profile";
+import AuditPerformedPage from "./pages/audits/AuditPerformedPage";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,9 @@ const App = () => (
           <Route path="/audits/:id/non-compliance" element={<NonCompliancePreview />} />
           <Route path="/audits/in-review" element={<AuditsInReviewPage />} />
           <Route path="/audits/review/:id" element={<AuditReviewPage />} />
+          {/* New route for performed audit */}
+          <Route path="/audits/performed/:id" element={<AuditPerformedPage />} />
+
           <Route path="/auditors" element={<AuditorsList />} />
           <Route path="/reports" element={<ReportsList />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
