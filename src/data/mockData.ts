@@ -1,4 +1,3 @@
-
 import { AuditType, AuditorType } from "@/types";
 
 export const mockAuditors: AuditorType[] = [
@@ -45,92 +44,53 @@ export const mockAuditors: AuditorType[] = [
 
 export const mockAudits: AuditType[] = [
   {
-    id: "audit-1",
-    title: "Annual Restaurant Health Inspection",
-    description: "Comprehensive health and safety audit for downtown restaurant",
-    location: "123 Main St, New York, NY",
-    dueDate: "2023-12-15",
-    createdAt: "2023-11-01",
-    updatedAt: "2023-11-01",
-    status: "in-progress",
-    auditorId: "auditor-1",
+    id: "audit-001",
+    title: "Quarterly Kitchen Inspection",
+    description: "Standard quarterly inspection of kitchen facilities and food safety practices",
+    location: "Main Street Restaurant",
+    dueDate: "2025-05-15",
+    createdAt: "2025-04-20",
+    updatedAt: "2025-04-20",
+    status: "pending",
+    auditorId: "auditor-001",
     sections: [
       {
-        id: "section-1",
+        id: "section-001",
         title: "Kitchen Cleanliness",
         items: [
           {
-            id: "item-1",
-            question: "Are food preparation surfaces cleaned and sanitized regularly?",
-            type: "yes-no",
-            required: true,
-            response: false,
-            notes: "Several cutting boards showed signs of cross-contamination between raw meat and vegetables. Immediate cleaning protocol revision needed."
-          },
-          {
-            id: "item-2",
-            question: "Is the refrigerator temperature maintained below 40°F (4°C)?",
+            id: "item-001",
+            question: "Are all food preparation surfaces properly sanitized?",
             type: "yes-no",
             required: true,
             response: true
           },
           {
-            id: "item-3",
-            question: "Are all utensils properly sanitized after each use?",
+            id: "item-002",
+            question: "Is the floor clean and free of debris?",
             type: "yes-no",
             required: true,
-            response: false,
-            notes: "Staff observed reusing utensils without proper sanitization between different food items."
+            response: false
           }
         ]
       },
       {
-        id: "section-2",
+        id: "section-002",
         title: "Food Storage",
         items: [
           {
-            id: "item-4",
-            question: "Are raw foods stored separately from ready-to-eat foods?",
+            id: "item-003",
+            question: "Are refrigerators maintaining proper temperature (below 40°F/4°C)?",
             type: "yes-no",
             required: true,
             response: true
           },
           {
-            id: "item-5",
+            id: "item-004",
             question: "Are all food items properly labeled and dated?",
             type: "yes-no",
             required: true,
-            response: false,
-            notes: "Multiple containers found without date labels in walk-in cooler. Staff need retraining on labeling protocols."
-          },
-          {
-            id: "item-6",
-            question: "Are dry goods stored at least 6 inches off the floor?",
-            type: "yes-no",
-            required: true,
-            response: false,
-            notes: "Several bags of flour and rice found directly on the floor in the storage area."
-          }
-        ]
-      },
-      {
-        id: "section-3",
-        title: "Employee Hygiene",
-        items: [
-          {
-            id: "item-7",
-            question: "Do employees wash hands between tasks?",
-            type: "yes-no",
-            required: true,
-            response: false,
-            notes: "Multiple staff members observed not washing hands when switching between food handling tasks."
-          },
-          {
-            id: "item-8",
-            question: "Are proper hair restraints worn by all food handlers?",
-            type: "yes-no",
-            required: true,
-            response: true
+            response: false
           }
         ]
       }
