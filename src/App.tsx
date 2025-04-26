@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import AuditsList from "./pages/audits/AuditsList";
 import AuditDetail from "./pages/audits/AuditDetail";
 import CreateAudit from "./pages/audits/CreateAudit";
+import EditAudit from "./pages/audits/EditAudit";
 import NonCompliancePreview from "./pages/audits/NonCompliancePreview";
 import AuditsInReviewPage from "./pages/audits/AuditsInReviewPage";
 import AuditReviewPage from "./pages/audits/AuditReviewPage";
