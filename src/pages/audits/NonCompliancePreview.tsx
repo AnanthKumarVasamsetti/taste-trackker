@@ -32,6 +32,21 @@ const NonCompliancePreview = () => {
     );
   }
 
+  // Redirect if audit is not in-review or completed
+  if (audit.status !== 'in-review' && audit.status !== 'completed') {
+    return (
+      <MainLayout>
+        <div className="flex flex-col items-center justify-center h-[60vh]">
+          <h2 className="text-2xl font-bold">Access Restricted</h2>
+          <p className="text-gray-500 mb-4">Non-compliance reports are only available for audits in review status.</p>
+          <Link to={`/audits/${id}`}>
+            <Button variant="outline">Back to Audit</Button>
+          </Link>
+        </div>
+      </MainLayout>
+    );
+  }
+
   const handleDownload = () => {
     toast.success("Report downloaded successfully");
   };

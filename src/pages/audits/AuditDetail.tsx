@@ -44,13 +44,15 @@ const AuditDetail = () => {
         return 'bg-violet-100 text-violet-800';
       case 'completed':
         return 'bg-green-100 text-green-800';
+      case 'in-review':
+        return 'bg-blue-100 text-blue-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
   };
 
   // Count non-compliant items (those with false responses)
-  const nonCompliantCount = audit.status === 'completed' ? audit.sections.reduce((count, section) => {
+  const nonCompliantCount = (audit.status === 'completed' || audit.status === 'in-review') ? audit.sections.reduce((count, section) => {
     return count + section.items.filter(item => item.response === false).length;
   }, 0) : 0;
 
@@ -150,7 +152,7 @@ const AuditDetail = () => {
               </CardContent>
             </Card>
 
-            {audit.status === 'completed' && nonCompliantCount > 0 && (
+            {(audit.status === 'completed' || audit.status === 'in-review') && nonCompliantCount > 0 && (
               <Card className="border-red-200">
                 <CardHeader className="bg-red-50 border-b border-red-200">
                   <CardTitle className="text-lg flex items-center">
@@ -227,7 +229,7 @@ const AuditSection = ({ section, auditStatus }: AuditSectionProps) => {
           {section.items.map((item, index) => (
             <div key={item.id} className={index < section.items.length - 1 ? "pb-4 border-b" : ""}>
               <p className="font-medium mb-2">{item.question}</p>
-              {auditStatus === 'completed' && item.type === 'yes-no' && (
+              {(auditStatus === 'completed' || auditStatus === 'in-review') && item.type === 'yes-no' && (
                 <div className="flex gap-4">
                   <div className={`flex items-center gap-2 ${item.response === true ? 'text-brand-green font-medium' : ''}`}>
                     <div className={`w-4 h-4 rounded-full border ${item.response === true ? 'bg-brand-green border-brand-green' : 'border-gray-300'}`}></div>
@@ -239,8 +241,17 @@ const AuditSection = ({ section, auditStatus }: AuditSectionProps) => {
                   </div>
                 </div>
               )}
-              {auditStatus !== 'completed' && (
-                <p className="text-sm text-gray-500 italic">Not answered yet</p>
+              {(auditStatus === 'pending' || auditStatus === 'in-progress') && item.type === 'yes-no' && (
+                <div className="flex gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full border border-gray-300"></div>
+                    <span>Yes</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full border border-gray-300"></div>
+                    <span>No</span>
+                  </div>
+                </div>
               )}
             </div>
           ))}

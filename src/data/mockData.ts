@@ -1,3 +1,4 @@
+
 import { AuditType, AuditorType } from "@/types";
 
 export const mockAuditors: AuditorType[] = [
@@ -26,20 +27,21 @@ export const mockAuditors: AuditorType[] = [
     assignedAudits: []
   },
   {
-    id: "auditor1",
-    name: "Alice Johnson",
-    email: "alice.johnson@example.com",
-    phone: "555-1234",
-    role: "Food Safety Specialist",
-    assignedAudits: ["audit-in1"],
+    id: "auditor-4",
+    name: "Sarah Williams",
+    email: "sarah.williams@example.com",
+    phone: "+1 (555) 789-0123",
+    role: "Compliance Officer",
+    assignedAudits: ["audit-6", "audit-7"]
   },
   {
-    id: "auditor2",
-    name: "Bob Smith",
-    email: "bob.smith@example.com",
-    role: "Quality Assurance Auditor",
-    assignedAudits: ["audit-in2"],
-  },
+    id: "auditor-5",
+    name: "David Brown",
+    email: "david.brown@example.com",
+    phone: "+1 (555) 456-7890",
+    role: "Food Safety Inspector",
+    assignedAudits: ["audit-8"]
+  }
 ];
 
 export const mockAudits: AuditType[] = [
@@ -52,7 +54,7 @@ export const mockAudits: AuditType[] = [
     createdAt: "2025-04-20",
     updatedAt: "2025-04-20",
     status: "in-progress",
-    auditorId: "auditor-001",
+    auditorId: "auditor-1",
     sections: [
       {
         id: "section-001",
@@ -149,7 +151,7 @@ export const mockAudits: AuditType[] = [
     dueDate: "2023-12-10",
     createdAt: "2023-11-08",
     updatedAt: "2023-11-08",
-    status: "completed",
+    status: "in-review",
     auditorId: "auditor-1",
     sections: [
       {
@@ -204,7 +206,7 @@ export const mockAudits: AuditType[] = [
     dueDate: "2023-11-30",
     createdAt: "2023-10-15",
     updatedAt: "2023-11-01",
-    status: "completed",
+    status: "in-review",
     auditorId: "auditor-2",
     sections: [
       {
@@ -301,67 +303,174 @@ export const mockAudits: AuditType[] = [
     ]
   },
   {
-    id: "audit-in1",
-    title: "Kitchen Hygiene Audit - Restaurant A",
-    description: "Comprehensive hygiene and safety compliance check in Restaurant A.",
-    location: "Restaurant A - Main Kitchen",
-    dueDate: new Date().toISOString(),
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    status: "in-review",
-    auditorId: "auditor1",
+    id: "audit-6",
+    title: "Cafeteria Monthly Inspection",
+    description: "Routine monthly inspection of high school cafeteria",
+    location: "Lincoln High School",
+    dueDate: "2023-11-25",
+    createdAt: "2023-11-01",
+    updatedAt: "2023-11-01",
+    status: "pending",
+    auditorId: "auditor-4",
     sections: [
       {
-        id: "sec1",
-        title: "Cleaning Procedures",
+        id: "section-1",
+        title: "Food Preparation",
         items: [
           {
-            id: "item1",
-            question: "Are cleaning chemicals labeled and stored properly?",
+            id: "item-1",
+            question: "Are food handlers following proper hygiene protocols?",
             type: "yes-no",
-            required: true,
-            response: false,
-            notes: "Chemicals were stored incorrectly under sink.",
+            required: true
           },
           {
-            id: "item2",
-            question: "Are cleaning schedules documented?",
+            id: "item-2",
+            question: "Are food preparation areas clean and sanitized?",
             type: "yes-no",
-            required: true,
-            response: true,
-          },
-        ],
+            required: true
+          }
+        ]
       },
-    ],
-    notes: "",
+      {
+        id: "section-2",
+        title: "Equipment Maintenance",
+        items: [
+          {
+            id: "item-3",
+            question: "Is all equipment clean and in good working condition?",
+            type: "yes-no",
+            required: true
+          },
+          {
+            id: "item-4",
+            question: "Are thermometers calibrated and used appropriately?",
+            type: "yes-no",
+            required: true
+          }
+        ]
+      }
+    ]
   },
   {
-    id: "audit-in2",
-    title: "Cold Storage Inspection - Warehouse",
-    description:
-      "Inspection of cold storage facilities for compliance with temperature regulation.",
-    location: "Warehouse Cold Storage",
-    dueDate: new Date().toISOString(),
-    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    status: "in-review",
-    auditorId: "auditor2",
+    id: "audit-7",
+    title: "Restaurant Compliance Check",
+    description: "Quarterly compliance inspection for downtown restaurant",
+    location: "The Grill House, 123 Main St",
+    dueDate: "2023-12-05",
+    createdAt: "2023-11-05",
+    updatedAt: "2023-11-05",
+    status: "pending",
+    auditorId: "auditor-4",
     sections: [
       {
-        id: "sec2",
-        title: "Temperature Control",
+        id: "section-1",
+        title: "Sanitation Standards",
         items: [
           {
-            id: "item3",
-            question: "Is the temperature log up to date?",
+            id: "item-1",
+            question: "Are cleaning chemicals properly stored and labeled?",
             type: "yes-no",
-            required: true,
-            response: false,
-            notes: "Missing two days of temperature logs.",
+            required: true
           },
-        ],
+          {
+            id: "item-2",
+            question: "Is the cleaning schedule followed and documented?",
+            type: "yes-no",
+            required: true
+          }
+        ]
       },
-    ],
-    notes: "",
+      {
+        id: "section-2",
+        title: "Pest Control",
+        items: [
+          {
+            id: "item-3",
+            question: "Is there evidence of pest activity?",
+            type: "yes-no",
+            required: true
+          },
+          {
+            id: "item-4",
+            question: "Are pest control records up to date?",
+            type: "yes-no",
+            required: true
+          }
+        ]
+      }
+    ]
   },
+  {
+    id: "audit-8",
+    title: "Hotel Kitchen Audit",
+    description: "Annual food safety audit for Grand Hotel kitchen facilities",
+    location: "Grand Hotel, 500 Luxury Ave",
+    dueDate: "2023-12-15",
+    createdAt: "2023-11-10",
+    updatedAt: "2023-11-10",
+    status: "pending",
+    auditorId: "auditor-5",
+    sections: [
+      {
+        id: "section-1",
+        title: "Staff Training",
+        items: [
+          {
+            id: "item-1",
+            question: "Have all staff been trained in food safety procedures?",
+            type: "yes-no",
+            required: true
+          },
+          {
+            id: "item-2",
+            question: "Are training records complete and up to date?",
+            type: "yes-no",
+            required: true
+          }
+        ]
+      },
+      {
+        id: "section-2",
+        title: "Storage Facilities",
+        items: [
+          {
+            id: "item-3",
+            question: "Are dry goods stored properly off the floor?",
+            type: "yes-no",
+            required: true
+          },
+          {
+            id: "item-4",
+            question: "Is the FIFO (First In, First Out) system being followed?",
+            type: "yes-no",
+            required: true
+          },
+          {
+            id: "item-5",
+            question: "What is the current temperature of the walk-in refrigerator?",
+            type: "numeric",
+            required: true
+          }
+        ]
+      },
+      {
+        id: "section-3",
+        title: "Cross-Contamination Prevention",
+        items: [
+          {
+            id: "item-6",
+            question: "Are color-coded cutting boards used appropriately?",
+            type: "yes-no",
+            required: true
+          },
+          {
+            id: "item-7",
+            question: "Are raw foods stored separately from ready-to-eat foods?",
+            type: "yes-no",
+            required: true
+          }
+        ]
+      }
+    ]
+  }
 ];

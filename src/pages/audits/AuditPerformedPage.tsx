@@ -20,7 +20,7 @@ import { AuditType } from "@/types";
 
 const AuditPerformedPage = () => {
   const { id } = useParams<{ id: string }>();
-  const audit: AuditType | undefined = mockAudits.find(a => a.id === id && a.status === "completed");
+  const audit: AuditType | undefined = mockAudits.find(a => a.id === id && (a.status === "completed" || a.status === "in-review"));
 
   const auditor = audit?.auditorId ? mockAuditors.find(a => a.id === audit.auditorId) : null;
 
@@ -56,7 +56,9 @@ const AuditPerformedPage = () => {
       <div className="space-y-6">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold tracking-tight">{audit.title}</h1>
-          <Badge className="bg-green-100 text-green-800">Performed</Badge>
+          <Badge className={audit.status === "completed" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}>
+            {audit.status === "completed" ? "Performed" : "In Review"}
+          </Badge>
         </div>
         <p className="text-gray-500">{audit.description}</p>
 

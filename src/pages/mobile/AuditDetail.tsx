@@ -83,6 +83,8 @@ const MobileAuditDetail = () => {
         return `${baseClasses} bg-violet-100 text-violet-800`;
       case 'completed':
         return `${baseClasses} bg-green-100 text-green-800`;
+      case 'in-review':
+        return `${baseClasses} bg-blue-100 text-blue-800`;
       default:
         return `${baseClasses} bg-gray-100 text-gray-800`;
     }
@@ -90,7 +92,7 @@ const MobileAuditDetail = () => {
   
   const activeProgressPercentage = ((activeSection + 1) / audit.sections.length) * 100;
   
-  const nonCompliantCount = audit.status === 'completed' ? Object.values(responses).filter(response => response === false).length : 0;
+  const nonCompliantCount = (audit.status === 'completed' || audit.status === 'in-review') ? Object.values(responses).filter(response => response === false).length : 0;
   
   return (
     <MobileLayout>
@@ -151,7 +153,7 @@ const MobileAuditDetail = () => {
           </div>
         </div>
         
-        {audit.status === 'completed' && nonCompliantCount > 0 && (
+        {(audit.status === 'completed' || audit.status === 'in-review') && nonCompliantCount > 0 && (
           <div className="mb-6 border border-red-200 rounded-lg p-4 bg-red-50">
             <div className="flex items-start gap-2 mb-2">
               <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
@@ -267,7 +269,7 @@ const AuditItem = ({
   onNotesChange,
   auditStatus
 }: AuditItemProps) => {
-  const isCompleted = auditStatus === 'completed';
+  const isCompleted = auditStatus === 'completed' || auditStatus === 'in-review';
   const isEditable = auditStatus === 'in-progress';
   
   return (
@@ -313,6 +315,19 @@ const AuditItem = ({
         </div>
       )}
       
+      {item.type === 'yes-no' && !isCompleted && !isEditable && (
+        <div className="flex space-x-4 mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full border border-gray-300"></div>
+            <span>Yes</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full border border-gray-300"></div>
+            <span>No</span>
+          </div>
+        </div>
+      )}
+      
       {item.type === 'multiple-choice' && isEditable && item.options && (
         <div className="space-y-2 mb-4">
           {item.options.map((option, idx) => (
@@ -330,12 +345,38 @@ const AuditItem = ({
         </div>
       )}
       
+      {item.type === 'multiple-choice' && !isEditable && item.options && (
+        <div className="space-y-2 mb-4">
+          {item.options.map((option, idx) => (
+            <Button
+              key={idx}
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={true}
+              className="mr-2 mb-2"
+            >
+              {option}
+            </Button>
+          ))}
+        </div>
+      )}
+      
       {item.type === 'text' && isEditable && (
         <Textarea
           value={response as string || ""}
           onChange={(e) => onResponseChange(e.target.value)}
           placeholder="Enter your response"
           className="mb-4"
+        />
+      )}
+      
+      {item.type === 'text' && !isEditable && (
+        <Textarea
+          value=""
+          disabled={true}
+          placeholder="No response provided"
+          className="mb-4 bg-gray-50"
         />
       )}
       
@@ -349,8 +390,14 @@ const AuditItem = ({
         />
       )}
       
-      {!isCompleted && !isEditable && (
-        <p className="text-sm text-gray-500 italic mb-4">Not answered yet</p>
+      {item.type === 'numeric' && !isEditable && (
+        <Input
+          type="number"
+          value=""
+          disabled={true}
+          placeholder="No value entered"
+          className="mb-4 bg-gray-50"
+        />
       )}
       
       {(isCompleted || isEditable) && (
