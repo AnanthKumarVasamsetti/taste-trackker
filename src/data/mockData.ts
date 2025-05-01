@@ -51,7 +51,7 @@ export const mockAudits: AuditType[] = [
     dueDate: "2025-05-15",
     createdAt: "2025-04-20",
     updatedAt: "2025-04-20",
-    status: "pending",
+    status: "in-progress",
     auditorId: "auditor-001",
     sections: [
       {
@@ -62,15 +62,13 @@ export const mockAudits: AuditType[] = [
             id: "item-001",
             question: "Are all food preparation surfaces properly sanitized?",
             type: "yes-no",
-            required: true,
-            response: true
+            required: true
           },
           {
             id: "item-002",
             question: "Is the floor clean and free of debris?",
             type: "yes-no",
-            required: true,
-            response: false
+            required: true
           }
         ]
       },
@@ -82,15 +80,13 @@ export const mockAudits: AuditType[] = [
             id: "item-003",
             question: "Are refrigerators maintaining proper temperature (below 40°F/4°C)?",
             type: "yes-no",
-            required: true,
-            response: true
+            required: true
           },
           {
             id: "item-004",
             question: "Are all food items properly labeled and dated?",
             type: "yes-no",
-            required: true,
-            response: false
+            required: true
           }
         ]
       }
@@ -104,7 +100,7 @@ export const mockAudits: AuditType[] = [
     dueDate: "2023-12-30",
     createdAt: "2023-11-05",
     updatedAt: "2023-11-07",
-    status: "pending",
+    status: "in-progress",
     auditorId: "auditor-2",
     sections: [
       {
@@ -115,17 +111,13 @@ export const mockAudits: AuditType[] = [
             id: "item-1",
             question: "Are all production line employees wearing proper PPE?",
             type: "yes-no",
-            required: true,
-            response: false,
-            notes: "3 employees found without required safety gloves during food handling. Immediate corrective action required."
+            required: true
           },
           {
             id: "item-2",
             question: "Is equipment being sanitized between production runs?",
             type: "yes-no",
-            required: true,
-            response: false,
-            notes: "Sanitization logs incomplete for night shift operations. No evidence of proper cleaning between product changeovers."
+            required: true
           }
         ]
       },
@@ -137,16 +129,13 @@ export const mockAudits: AuditType[] = [
             id: "item-3",
             question: "Are batch samples tested according to schedule?",
             type: "yes-no",
-            required: true,
-            response: false,
-            notes: "QC testing logs show gaps for 3 consecutive production days. Testing procedure not followed consistently."
+            required: true
           },
           {
             id: "item-4",
             question: "Are testing records properly maintained and accessible?",
             type: "yes-no",
-            required: true,
-            response: true
+            required: true
           }
         ]
       }
@@ -215,7 +204,7 @@ export const mockAudits: AuditType[] = [
     dueDate: "2023-11-30",
     createdAt: "2023-10-15",
     updatedAt: "2023-11-01",
-    status: "in-review",
+    status: "completed",
     auditorId: "auditor-2",
     sections: [
       {
@@ -270,7 +259,7 @@ export const mockAudits: AuditType[] = [
     dueDate: "2023-11-15",
     createdAt: "2023-10-10",
     updatedAt: "2023-10-30",
-    status: "in-review",
+    status: "pending",
     auditorId: "auditor-3",
     sections: [
       {
@@ -281,16 +270,13 @@ export const mockAudits: AuditType[] = [
             id: "item-1",
             question: "Are handwashing stations properly supplied and accessible?",
             type: "yes-no",
-            required: true,
-            response: true
+            required: true
           },
           {
             id: "item-2",
             question: "Are all food contact surfaces cleaned and sanitized regularly?",
             type: "yes-no",
-            required: true,
-            response: false,
-            notes: "Mixing equipment had residue from previous day's production."
+            required: true
           }
         ]
       },
@@ -302,16 +288,13 @@ export const mockAudits: AuditType[] = [
             id: "item-3",
             question: "Are allergens properly labeled on all products?",
             type: "yes-no",
-            required: true,
-            response: false,
-            notes: "Three products found with incomplete allergen information on labels."
+            required: true
           },
           {
             id: "item-4",
             question: "Is there a protocol for preventing cross-contamination of allergens?",
             type: "yes-no",
-            required: true,
-            response: true
+            required: true
           }
         ]
       }

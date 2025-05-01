@@ -50,9 +50,9 @@ const AuditDetail = () => {
   };
 
   // Count non-compliant items (those with false responses)
-  const nonCompliantCount = audit.sections.reduce((count, section) => {
+  const nonCompliantCount = audit.status === 'completed' ? audit.sections.reduce((count, section) => {
     return count + section.items.filter(item => item.response === false).length;
-  }, 0);
+  }, 0) : 0;
 
   return (
     <MainLayout>
@@ -122,7 +122,7 @@ const AuditDetail = () => {
 
                 <div className="space-y-6">
                   {audit.sections.map((section) => (
-                    <AuditSection key={section.id} section={section} />
+                    <AuditSection key={section.id} section={section} auditStatus={audit.status} />
                   ))}
                 </div>
               </div>
@@ -150,7 +150,7 @@ const AuditDetail = () => {
               </CardContent>
             </Card>
 
-            {nonCompliantCount > 0 && (
+            {audit.status === 'completed' && nonCompliantCount > 0 && (
               <Card className="border-red-200">
                 <CardHeader className="bg-red-50 border-b border-red-200">
                   <CardTitle className="text-lg flex items-center">
@@ -210,9 +210,10 @@ const AuditDetail = () => {
 
 interface AuditSectionProps {
   section: AuditSectionType;
+  auditStatus: string;
 }
 
-const AuditSection = ({ section }: AuditSectionProps) => {
+const AuditSection = ({ section, auditStatus }: AuditSectionProps) => {
   return (
     <div className="border rounded-lg overflow-hidden">
       <div className="bg-gray-50 px-4 py-3 border-b">
@@ -226,7 +227,7 @@ const AuditSection = ({ section }: AuditSectionProps) => {
           {section.items.map((item, index) => (
             <div key={item.id} className={index < section.items.length - 1 ? "pb-4 border-b" : ""}>
               <p className="font-medium mb-2">{item.question}</p>
-              {item.type === 'yes-no' && (
+              {auditStatus === 'completed' && item.type === 'yes-no' && (
                 <div className="flex gap-4">
                   <div className={`flex items-center gap-2 ${item.response === true ? 'text-brand-green font-medium' : ''}`}>
                     <div className={`w-4 h-4 rounded-full border ${item.response === true ? 'bg-brand-green border-brand-green' : 'border-gray-300'}`}></div>
@@ -238,7 +239,7 @@ const AuditSection = ({ section }: AuditSectionProps) => {
                   </div>
                 </div>
               )}
-              {item.response === undefined && (
+              {auditStatus !== 'completed' && (
                 <p className="text-sm text-gray-500 italic">Not answered yet</p>
               )}
             </div>

@@ -13,6 +13,7 @@ import EditAudit from "./pages/audits/EditAudit";
 import NonCompliancePreview from "./pages/audits/NonCompliancePreview";
 import AuditsInReviewPage from "./pages/audits/AuditsInReviewPage";
 import AuditReviewPage from "./pages/audits/AuditReviewPage";
+import AuditPerformedPage from "./pages/audits/AuditPerformedPage";
 import AuditorsList from "./pages/auditors/AuditorsList";
 import ReportsList from "./pages/reports/ReportsList";
 import SettingsPage from "./pages/settings/SettingsPage";
@@ -25,7 +26,6 @@ import MobileAuditsList from "./pages/mobile/AuditsList";
 import MobileAuditDetail from "./pages/mobile/AuditDetail";
 import MobileNonCompliancePreview from "./pages/mobile/NonCompliancePreview";
 import MobileProfile from "./pages/mobile/Profile";
-import AuditPerformedPage from "./pages/audits/AuditPerformedPage";
 
 const queryClient = new QueryClient();
 
@@ -42,11 +42,10 @@ const App = () => (
           <Route path="/audits" element={<AuditsList />} />
           <Route path="/audits/:id" element={<AuditDetail />} />
           <Route path="/audits/new" element={<CreateAudit />} />
-          <Route path="/audits/edit/:id" element={<AuditDetail />} />
+          <Route path="/audits/edit/:id" element={<EditAudit />} />
           <Route path="/audits/:id/non-compliance" element={<NonCompliancePreview />} />
           <Route path="/audits/in-review" element={<AuditsInReviewPage />} />
           <Route path="/audits/review/:id" element={<AuditReviewPage />} />
-          {/* New route for performed audit */}
           <Route path="/audits/performed/:id" element={<AuditPerformedPage />} />
 
           <Route path="/auditors" element={<AuditorsList />} />

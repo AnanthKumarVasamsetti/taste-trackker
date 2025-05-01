@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ChevronLeft, CheckCircle2, Clock, MapPin, User, FileText, AlertTriangle } from "lucide-react";
@@ -89,7 +90,7 @@ const MobileAuditDetail = () => {
   
   const activeProgressPercentage = ((activeSection + 1) / audit.sections.length) * 100;
   
-  const nonCompliantCount = Object.values(responses).filter(response => response === false).length;
+  const nonCompliantCount = audit.status === 'completed' ? Object.values(responses).filter(response => response === false).length : 0;
   
   return (
     <MobileLayout>
@@ -150,7 +151,7 @@ const MobileAuditDetail = () => {
           </div>
         </div>
         
-        {nonCompliantCount > 0 && audit.status === 'completed' && (
+        {audit.status === 'completed' && nonCompliantCount > 0 && (
           <div className="mb-6 border border-red-200 rounded-lg p-4 bg-red-50">
             <div className="flex items-start gap-2 mb-2">
               <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
@@ -178,6 +179,7 @@ const MobileAuditDetail = () => {
           notes={notes}
           onResponseChange={handleItemResponse}
           onNotesChange={handleItemNotes}
+          auditStatus={audit.status}
         />
       
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-between space-x-4">
@@ -200,7 +202,7 @@ const MobileAuditDetail = () => {
           ) : (
             <Button 
               onClick={handleSubmitAudit}
-              disabled={isSubmitting}
+              disabled={isSubmitting || audit.status === 'completed'}
               className="bg-green-600 hover:bg-green-700 flex-1"
             >
               {isSubmitting ? "Submitting..." : "Submit Audit"}
@@ -218,6 +220,7 @@ interface AuditSectionProps {
   notes: Record<string, string>;
   onResponseChange: (itemId: string, value: string | boolean) => void;
   onNotesChange: (itemId: string, value: string) => void;
+  auditStatus: string;
 }
 
 const AuditSection = ({ 
@@ -225,7 +228,8 @@ const AuditSection = ({
   responses, 
   notes,
   onResponseChange,
-  onNotesChange
+  onNotesChange,
+  auditStatus
 }: AuditSectionProps) => {
   return (
     <div className="space-y-6">
@@ -239,6 +243,7 @@ const AuditSection = ({
           notes={notes[item.id] || ""}
           onResponseChange={(value) => onResponseChange(item.id, value)}
           onNotesChange={(value) => onNotesChange(item.id, value)}
+          auditStatus={auditStatus}
         />
       ))}
     </div>
@@ -251,6 +256,7 @@ interface AuditItemProps {
   notes: string;
   onResponseChange: (value: string | boolean) => void;
   onNotesChange: (value: string) => void;
+  auditStatus: string;
 }
 
 const AuditItem = ({ 
@@ -258,8 +264,12 @@ const AuditItem = ({
   response,
   notes,
   onResponseChange,
-  onNotesChange
+  onNotesChange,
+  auditStatus
 }: AuditItemProps) => {
+  const isCompleted = auditStatus === 'completed';
+  const isEditable = auditStatus === 'in-progress';
+  
   return (
     <div className="border rounded-lg p-4">
       <p className="font-medium mb-3">
@@ -267,7 +277,7 @@ const AuditItem = ({
         {item.required && <span className="text-red-500">*</span>}
       </p>
       
-      {item.type === 'yes-no' && (
+      {item.type === 'yes-no' && isEditable && (
         <div className="flex space-x-4 mb-4">
           <Button
             type="button"
@@ -290,7 +300,20 @@ const AuditItem = ({
         </div>
       )}
       
-      {item.type === 'multiple-choice' && item.options && (
+      {item.type === 'yes-no' && isCompleted && (
+        <div className="flex space-x-4 mb-4">
+          <div className={`flex items-center gap-2 ${item.response === true ? 'text-brand-green font-medium' : ''}`}>
+            <div className={`w-4 h-4 rounded-full border ${item.response === true ? 'bg-green-600 border-green-600' : 'border-gray-300'}`}></div>
+            <span>Yes</span>
+          </div>
+          <div className={`flex items-center gap-2 ${item.response === false ? 'text-red-500 font-medium' : ''}`}>
+            <div className={`w-4 h-4 rounded-full border ${item.response === false ? 'bg-red-600 border-red-600' : 'border-gray-300'}`}></div>
+            <span>No</span>
+          </div>
+        </div>
+      )}
+      
+      {item.type === 'multiple-choice' && isEditable && item.options && (
         <div className="space-y-2 mb-4">
           {item.options.map((option, idx) => (
             <Button
@@ -307,7 +330,7 @@ const AuditItem = ({
         </div>
       )}
       
-      {item.type === 'text' && (
+      {item.type === 'text' && isEditable && (
         <Textarea
           value={response as string || ""}
           onChange={(e) => onResponseChange(e.target.value)}
@@ -316,7 +339,7 @@ const AuditItem = ({
         />
       )}
       
-      {item.type === 'numeric' && (
+      {item.type === 'numeric' && isEditable && (
         <Input
           type="number"
           value={response as string || ""}
@@ -326,15 +349,27 @@ const AuditItem = ({
         />
       )}
       
-      <div>
-        <p className="text-sm text-gray-600 mb-2">Additional Notes (optional)</p>
-        <Textarea
-          value={notes}
-          onChange={(e) => onNotesChange(e.target.value)}
-          placeholder="Add notes here..."
-          rows={2}
-        />
-      </div>
+      {!isCompleted && !isEditable && (
+        <p className="text-sm text-gray-500 italic mb-4">Not answered yet</p>
+      )}
+      
+      {(isCompleted || isEditable) && (
+        <div>
+          <p className="text-sm text-gray-600 mb-2">Additional Notes {isEditable && "(optional)"}</p>
+          {isEditable ? (
+            <Textarea
+              value={notes}
+              onChange={(e) => onNotesChange(e.target.value)}
+              placeholder="Add notes here..."
+              rows={2}
+            />
+          ) : (
+            <div className="bg-gray-50 p-3 rounded text-sm">
+              {item.notes || "No notes provided"}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

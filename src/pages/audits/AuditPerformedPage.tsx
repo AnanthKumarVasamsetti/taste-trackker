@@ -20,7 +20,7 @@ import { AuditType } from "@/types";
 
 const AuditPerformedPage = () => {
   const { id } = useParams<{ id: string }>();
-  const audit: AuditType | undefined = mockAudits.find(a => a.id === id && (a.status === "completed" || a.status === "in-review"));
+  const audit: AuditType | undefined = mockAudits.find(a => a.id === id && a.status === "completed");
 
   const auditor = audit?.auditorId ? mockAuditors.find(a => a.id === audit.auditorId) : null;
 
@@ -60,15 +60,15 @@ const AuditPerformedPage = () => {
         </div>
         <p className="text-gray-500">{audit.description}</p>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Non-Conformities Analysis</CardTitle>
-            <CardDescription>
-              Summary of non-compliance items found during the audit.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {nonCompliantItems.length > 0 ? (
+        {nonCompliantItems.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Non-Conformities Analysis</CardTitle>
+              <CardDescription>
+                Summary of non-compliance items found during the audit.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <ul className="list-disc list-inside space-y-2 text-gray-700">
                 {nonCompliantItems.map(item => (
                   <li key={item.id}>
@@ -76,17 +76,29 @@ const AuditPerformedPage = () => {
                   </li>
                 ))}
               </ul>
-            ) : (
-              <p className="text-gray-500">No non-conformities reported.</p>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
+
+        {nonCompliantItems.length === 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Audit Results</CardTitle>
+              <CardDescription>
+                The audit has been completed successfully with no non-conformities.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-500">All standards were met. No issues to report.</p>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>
             <CardTitle>Customer Feedback</CardTitle>
             <CardDescription>
-              Please provide any comments or feedback related to the non-conformities reported or audit process.
+              Please provide any comments or feedback related to the audit process.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -118,7 +130,6 @@ const AuditPerformedPage = () => {
           </CardHeader>
           <CardContent>
             <p className="text-gray-500">
-              {/* Placeholder: This section would dynamically list proposed changes */}
               Currently no proposed updates. Feedback will be reviewed to improve audit questionnaires.
             </p>
           </CardContent>
@@ -135,4 +146,3 @@ const AuditPerformedPage = () => {
 };
 
 export default AuditPerformedPage;
-
