@@ -15,6 +15,7 @@ import { mockAudits, mockAuditors } from "@/data/mockData";
 import { Link, useParams } from "react-router-dom";
 import { ClipboardCheck, Calendar, MapPin, User, Clock, FileText, AlertTriangle } from "lucide-react";
 import { AuditSectionType } from "@/types";
+import { toast } from "sonner";
 
 const AuditDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -56,6 +57,9 @@ const AuditDetail = () => {
     return count + section.items.filter(item => item.response === false).length;
   }, 0) : 0;
 
+  // Determine if the audit is editable (only if it's in pending status)
+  const isEditable = audit.status === 'pending';
+
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -72,8 +76,19 @@ const AuditDetail = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Link to={`/audits/edit/${audit.id}`}>
-              <Button variant="outline">Edit Audit</Button>
+            <Link to={isEditable ? `/audits/edit/${audit.id}` : "#"}>
+              <Button 
+                variant="outline" 
+                disabled={!isEditable}
+                onClick={(e) => {
+                  if (!isEditable) {
+                    e.preventDefault();
+                    toast.info("Only audits in 'pending' status can be edited");
+                  }
+                }}
+              >
+                {isEditable ? "Edit Audit" : "Cannot Edit"}
+              </Button>
             </Link>
             <Button className="bg-brand-blue hover:bg-brand-blue-dark">
               Generate Report

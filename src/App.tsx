@@ -24,6 +24,7 @@ import Login from "./pages/Login";
 import MobileIndex from "./pages/mobile/Index";
 import MobileAuditsList from "./pages/mobile/AuditsList";
 import MobileAuditDetail from "./pages/mobile/AuditDetail";
+import MobileEditAudit from "./pages/mobile/EditAudit";
 import MobileNonCompliancePreview from "./pages/mobile/NonCompliancePreview";
 import MobileProfile from "./pages/mobile/Profile";
 
@@ -57,6 +58,7 @@ const App = () => (
           <Route path="/mobile" element={<MobileIndex />} />
           <Route path="/mobile/audits" element={<MobileAuditsList />} />
           <Route path="/mobile/audits/:id" element={<MobileAuditDetail />} />
+          <Route path="/mobile/audits/edit/:id" element={<MobileEditAudit />} />
           <Route path="/mobile/audits/:id/non-compliance" element={<MobileNonCompliancePreview />} />
           <Route path="/mobile/profile" element={<MobileProfile />} />
 

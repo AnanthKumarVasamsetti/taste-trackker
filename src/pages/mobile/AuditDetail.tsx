@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ChevronLeft, CheckCircle2, Clock, MapPin, User, FileText, AlertTriangle } from "lucide-react";
+import { ChevronLeft, CheckCircle2, Clock, MapPin, User, FileText, AlertTriangle, Edit } from "lucide-react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,6 +94,9 @@ const MobileAuditDetail = () => {
   
   const nonCompliantCount = (audit.status === 'completed' || audit.status === 'in-review') ? Object.values(responses).filter(response => response === false).length : 0;
   
+  // Determine if the audit is editable
+  const isEditable = audit.status === 'pending';
+  
   return (
     <MobileLayout>
       <div className="p-4 pb-24">
@@ -140,6 +143,14 @@ const MobileAuditDetail = () => {
           </div>
         </div>
         
+        {isEditable && (
+          <Link to={`/mobile/audits/edit/${audit.id}`} className="w-full">
+            <Button variant="outline" className="w-full mb-4 flex items-center justify-center">
+              <Edit className="h-4 w-4 mr-2" /> Edit Audit Details
+            </Button>
+          </Link>
+        )}
+        
         <div className="mb-6">
           <div className="bg-gray-100 h-2 rounded-full mb-2">
             <div 
@@ -153,7 +164,7 @@ const MobileAuditDetail = () => {
           </div>
         </div>
         
-        {(audit.status === 'completed' || audit.status === 'in-review') && nonCompliantCount > 0 && (
+        {(audit.status === 'in-review') && nonCompliantCount > 0 && (
           <div className="mb-6 border border-red-200 rounded-lg p-4 bg-red-50">
             <div className="flex items-start gap-2 mb-2">
               <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
